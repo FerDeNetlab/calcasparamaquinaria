@@ -97,7 +97,7 @@ export function ProductDetail({ product }: { product: OdooProduct }) {
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
           {/* Product Image */}
           <div className="flex flex-col gap-4">
-            <div className="relative aspect-square overflow-hidden rounded-lg border border-border bg-secondary">
+            <div className="relative aspect-square overflow-hidden rounded-lg border border-border bg-white">
               <Image
                 src={imageUrl}
                 alt={product.name}
