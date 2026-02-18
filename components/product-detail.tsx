@@ -3,13 +3,19 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { useCart } from "@/contexts/cart-context"
+import { withIVA, formatMXN } from "@/lib/utils"
+import { productUrl } from "@/lib/slugs"
 import {
-  MessageCircle,
+  ShoppingCart,
+  Zap,
   Truck,
   Shield,
   Clock,
   ChevronRight,
+  Check,
 } from "lucide-react"
 import type { OdooProduct } from "@/lib/odoo"
 
@@ -26,11 +32,40 @@ const features = [
 
 export function ProductDetail({ product }: { product: OdooProduct }) {
   const [quantity, setQuantity] = useState(1)
+  const [added, setAdded] = useState(false)
+  const router = useRouter()
+  const { addToCart } = useCart()
+
   const categoryName = product.categ_id ? product.categ_id[1] : ""
   const imageUrl = `/api/product-image/${product.id}?size=1024`
-  const whatsappMsg = encodeURIComponent(
-    `Hola, me interesa: ${product.name} - $${product.list_price.toLocaleString("es-MX")} MXN (x${quantity})`
-  )
+  const priceWithIVA = withIVA(product.list_price)
+
+  function handleAddToCart() {
+    const url = `https://calcasparamaquinaria.mx${productUrl(product.id, product.name, categoryName || undefined)}`
+    for (let i = 0; i < quantity; i++) {
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: priceWithIVA,
+        productUrl: url,
+      })
+    }
+    setAdded(true)
+    setTimeout(() => setAdded(false), 2000)
+  }
+
+  function handleBuyNow() {
+    const url = `https://calcasparamaquinaria.mx${productUrl(product.id, product.name, categoryName || undefined)}`
+    for (let i = 0; i < quantity; i++) {
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: priceWithIVA,
+        productUrl: url,
+      })
+    }
+    router.push("/carrito")
+  }
 
   return (
     <section className="bg-background pt-20">
@@ -87,11 +122,15 @@ export function ProductDetail({ product }: { product: OdooProduct }) {
               </h1>
             </div>
 
-            <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-black text-foreground">
-                ${product.list_price.toLocaleString("es-MX", { minimumFractionDigits: 2 })}
-              </span>
-              <span className="text-sm text-muted-foreground">MXN</span>
+            {/* Price with IVA */}
+            <div className="flex flex-col gap-1">
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-black text-foreground">
+                  {formatMXN(priceWithIVA)}
+                </span>
+                <span className="text-sm text-muted-foreground">MXN</span>
+              </div>
+              <span className="text-xs text-muted-foreground">Precio con IVA incluido</span>
             </div>
 
             {product.description_sale && (
@@ -138,20 +177,32 @@ export function ProductDetail({ product }: { product: OdooProduct }) {
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row">
-                <a
-                  href={`https://wa.me/523315289366?text=${whatsappMsg}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1"
+                {/* Add to cart */}
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={handleAddToCart}
+                  className={`flex-1 font-bold uppercase tracking-wider border-2 transition-all duration-200 ${added
+                    ? "border-green-500 bg-green-500/10 text-green-500 hover:bg-green-500/10"
+                    : "border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                    }`}
                 >
-                  <Button
-                    size="lg"
-                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-bold uppercase tracking-wider"
-                  >
-                    <MessageCircle className="mr-2 h-5 w-5" />
-                    Cotizar por WhatsApp
-                  </Button>
-                </a>
+                  {added ? (
+                    <><Check className="mr-2 h-5 w-5" />Agregado al carrito</>
+                  ) : (
+                    <><ShoppingCart className="mr-2 h-5 w-5" />Agregar al carrito</>
+                  )}
+                </Button>
+
+                {/* Buy now → goes to cart */}
+                <Button
+                  size="lg"
+                  onClick={handleBuyNow}
+                  className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 font-bold uppercase tracking-wider"
+                >
+                  <Zap className="mr-2 h-5 w-5" />
+                  Comprar ahora
+                </Button>
               </div>
             </div>
 

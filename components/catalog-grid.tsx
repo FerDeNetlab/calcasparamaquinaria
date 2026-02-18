@@ -6,6 +6,8 @@ import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { SmartSearch } from "@/components/smart-search"
+import { useCart } from "@/contexts/cart-context"
+import { withIVA, formatMXN } from "@/lib/utils"
 import {
   Search,
   ShoppingCart,
@@ -16,6 +18,7 @@ import {
   LayoutList,
   ChevronLeft,
   ChevronRight,
+  Check,
 } from "lucide-react"
 import type { OdooProduct, OdooCategory } from "@/lib/odoo"
 import { productUrl } from "@/lib/slugs"
@@ -48,6 +51,8 @@ export function CatalogGrid({
   const searchParams = useSearchParams()
   const [showFilters, setShowFilters] = useState(!!currentCategory)
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+  const [addedIds, setAddedIds] = useState<Set<number>>(new Set())
+  const { addToCart } = useCart()
 
   // Navigate with updated search params (triggers server-side fetch)
   function navigate(updates: Record<string, string | undefined>) {
@@ -84,6 +89,25 @@ export function CatalogGrid({
 
   function clearFilters() {
     router.push("/catalogo")
+  }
+
+  function handleAddToCart(product: OdooProduct) {
+    const url = `https://calcasparamaquinaria.mx${productUrl(product.id, product.name, product.categ_id ? product.categ_id[1] : undefined)}`
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: withIVA(product.list_price),
+      productUrl: url,
+    })
+    // Show brief "added" feedback
+    setAddedIds((prev) => new Set(prev).add(product.id))
+    setTimeout(() => {
+      setAddedIds((prev) => {
+        const next = new Set(prev)
+        next.delete(product.id)
+        return next
+      })
+    }, 1500)
   }
 
   const hasActiveFilters = !!currentCategory || !!currentSearch || !!currentBrand
@@ -219,104 +243,137 @@ export function CatalogGrid({
       {/* Products Grid */}
       {viewMode === "grid" ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:border-primary/50"
-            >
-              <div className="relative aspect-square overflow-hidden bg-white p-4">
-                <Image
-                  src={`/api/product-image/${product.id}?size=256`}
-                  alt={product.name}
-                  fill
-                  className="object-contain p-6 transition-transform duration-500 group-hover:scale-110"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                />
-                <div className="absolute inset-0 flex items-center justify-center gap-2 bg-background/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <Link href={productUrl(product.id, product.name, product.categ_id ? product.categ_id[1] : undefined)}>
-                    <Button size="icon" className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 w-10">
-                      <Eye className="h-4 w-4" />
-                      <span className="sr-only">Ver detalle</span>
+          {products.map((product) => {
+            const priceWithIVA = withIVA(product.list_price)
+            const isAdded = addedIds.has(product.id)
+            return (
+              <div
+                key={product.id}
+                className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:border-primary/50"
+              >
+                <div className="relative aspect-square overflow-hidden bg-white p-4">
+                  <Image
+                    src={`/api/product-image/${product.id}?size=256`}
+                    alt={product.name}
+                    fill
+                    className="object-contain p-6 transition-transform duration-500 group-hover:scale-110"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center gap-2 bg-background/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <Link href={productUrl(product.id, product.name, product.categ_id ? product.categ_id[1] : undefined)}>
+                      <Button size="icon" className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 w-10">
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">Ver detalle</span>
+                      </Button>
+                    </Link>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={() => handleAddToCart(product)}
+                      className={`border-foreground/20 h-10 w-10 transition-all duration-200 ${isAdded
+                        ? "bg-green-500 border-green-500 text-white"
+                        : "bg-card text-foreground hover:bg-primary hover:text-primary-foreground"
+                        }`}
+                    >
+                      {isAdded ? <Check className="h-4 w-4" /> : <ShoppingCart className="h-4 w-4" />}
+                      <span className="sr-only">Agregar al carrito</span>
                     </Button>
-                  </Link>
-                  <a
-                    href={`https://wa.me/523315289366?text=${encodeURIComponent(`Hola, me interesa: ${product.name} - $${product.list_price.toLocaleString("es-MX")} MXN`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button size="icon" variant="outline" className="border-foreground/20 bg-card text-foreground hover:bg-primary hover:text-primary-foreground h-10 w-10">
-                      <ShoppingCart className="h-4 w-4" />
-                      <span className="sr-only">Cotizar</span>
+                  </div>
+                </div>
+                <div className="flex flex-1 flex-col gap-2 p-4">
+                  {product.categ_id && (
+                    <span className="text-xs font-semibold uppercase tracking-wider text-primary">
+                      {product.categ_id[1]}
+                    </span>
+                  )}
+                  <h3 className="text-sm font-bold text-foreground line-clamp-2">{product.name}</h3>
+                  <div className="mt-auto flex items-end justify-between pt-2">
+                    <div className="flex flex-col">
+                      <span className="text-lg font-black text-foreground">
+                        {formatMXN(priceWithIVA)}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground">IVA incluido</span>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => handleAddToCart(product)}
+                      className={`text-xs transition-all duration-200 ${isAdded
+                        ? "bg-green-500 hover:bg-green-500 text-white"
+                        : "bg-primary text-primary-foreground hover:bg-primary/90"
+                        }`}
+                    >
+                      {isAdded ? (
+                        <><Check className="mr-1 h-3 w-3" />Agregado</>
+                      ) : (
+                        <><ShoppingCart className="mr-1 h-3 w-3" />Agregar</>
+                      )}
                     </Button>
-                  </a>
+                  </div>
                 </div>
               </div>
-              <div className="flex flex-1 flex-col gap-2 p-4">
-                {product.categ_id && (
-                  <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-                    {product.categ_id[1]}
-                  </span>
-                )}
-                <h3 className="text-sm font-bold text-foreground line-clamp-2">{product.name}</h3>
-                <div className="mt-auto flex items-center justify-between pt-2">
-                  <span className="text-lg font-black text-foreground">
-                    ${product.list_price.toLocaleString("es-MX", { minimumFractionDigits: 2 })}
-                  </span>
-                  <span className="text-xs text-muted-foreground">MXN</span>
-                </div>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="group flex items-center gap-4 overflow-hidden rounded-lg border border-border bg-card p-4 transition-all duration-300 hover:border-primary/50"
-            >
-              <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
-                <Image
-                  src={`/api/product-image/${product.id}?size=128`}
-                  alt={product.name}
-                  fill
-                  className="object-contain p-2"
-                  sizes="80px"
-                />
-              </div>
-              <div className="flex flex-1 flex-col gap-1">
-                {product.categ_id && (
-                  <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-                    {product.categ_id[1]}
-                  </span>
-                )}
-                <h3 className="text-sm font-bold text-foreground">{product.name}</h3>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="text-lg font-black text-foreground">
-                  ${product.list_price.toLocaleString("es-MX", { minimumFractionDigits: 2 })}
-                </span>
-                <div className="flex gap-2">
-                  <Link href={productUrl(product.id, product.name, product.categ_id ? product.categ_id[1] : undefined)}>
-                    <Button size="sm" variant="outline" className="border-border text-foreground hover:bg-primary hover:text-primary-foreground">
-                      <Eye className="mr-1 h-3 w-3" />
-                      Ver
+          {products.map((product) => {
+            const priceWithIVA = withIVA(product.list_price)
+            const isAdded = addedIds.has(product.id)
+            return (
+              <div
+                key={product.id}
+                className="group flex items-center gap-4 overflow-hidden rounded-lg border border-border bg-card p-4 transition-all duration-300 hover:border-primary/50"
+              >
+                <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
+                  <Image
+                    src={`/api/product-image/${product.id}?size=128`}
+                    alt={product.name}
+                    fill
+                    className="object-contain p-2"
+                    sizes="80px"
+                  />
+                </div>
+                <div className="flex flex-1 flex-col gap-1">
+                  {product.categ_id && (
+                    <span className="text-xs font-semibold uppercase tracking-wider text-primary">
+                      {product.categ_id[1]}
+                    </span>
+                  )}
+                  <h3 className="text-sm font-bold text-foreground">{product.name}</h3>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="flex flex-col items-end">
+                    <span className="text-lg font-black text-foreground">
+                      {formatMXN(priceWithIVA)}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground">IVA inc.</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Link href={productUrl(product.id, product.name, product.categ_id ? product.categ_id[1] : undefined)}>
+                      <Button size="sm" variant="outline" className="border-border text-foreground hover:bg-primary hover:text-primary-foreground">
+                        <Eye className="mr-1 h-3 w-3" />
+                        Ver
+                      </Button>
+                    </Link>
+                    <Button
+                      size="sm"
+                      onClick={() => handleAddToCart(product)}
+                      className={`transition-all duration-200 ${isAdded
+                        ? "bg-green-500 hover:bg-green-500 text-white"
+                        : "bg-primary text-primary-foreground hover:bg-primary/90"
+                        }`}
+                    >
+                      {isAdded ? (
+                        <><Check className="mr-1 h-3 w-3" />Listo</>
+                      ) : (
+                        <><ShoppingCart className="mr-1 h-3 w-3" />Agregar</>
+                      )}
                     </Button>
-                  </Link>
-                  <a
-                    href={`https://wa.me/523315289366?text=${encodeURIComponent(`Hola, me interesa: ${product.name}`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                      <ShoppingCart className="mr-1 h-3 w-3" />
-                      Cotizar
-                    </Button>
-                  </a>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 

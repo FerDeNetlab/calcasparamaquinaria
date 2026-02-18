@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Menu, X, ShoppingCart, Search, Phone } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useCart } from "@/contexts/cart-context"
 
 const navLinks = [
   { label: "Inicio", href: "/" },
@@ -16,6 +17,7 @@ const navLinks = [
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
+  const { totalItems } = useCart()
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
@@ -54,9 +56,11 @@ export function Navbar() {
           <Link href="/carrito">
             <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-primary">
               <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                0
-              </span>
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                  {totalItems > 9 ? "9+" : totalItems}
+                </span>
+              )}
               <span className="sr-only">Carrito</span>
             </Button>
           </Link>
@@ -73,9 +77,11 @@ export function Navbar() {
           <Link href="/carrito">
             <Button variant="ghost" size="icon" className="relative text-muted-foreground">
               <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                0
-              </span>
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                  {totalItems > 9 ? "9+" : totalItems}
+                </span>
+              )}
               <span className="sr-only">Carrito</span>
             </Button>
           </Link>
