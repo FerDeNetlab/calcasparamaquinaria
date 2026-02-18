@@ -5,8 +5,10 @@ import { Eye, ArrowRight } from "lucide-react"
 import { getFeaturedProducts } from "@/lib/odoo"
 import type { OdooProduct } from "@/lib/odoo"
 import { productUrl } from "@/lib/slugs"
+import { withIVA, formatMXN } from "@/lib/utils"
 
 function ProductCard({ product }: { product: OdooProduct }) {
+  const priceWithIVA = withIVA(product.list_price)
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:border-primary/50">
       {/* Image */}
@@ -39,11 +41,13 @@ function ProductCard({ product }: { product: OdooProduct }) {
         <h3 className="text-sm font-bold text-foreground line-clamp-2">
           {product.name}
         </h3>
-        <div className="mt-auto flex items-center justify-between pt-2">
-          <span className="text-lg font-black text-foreground">
-            ${product.list_price.toLocaleString("es-MX", { minimumFractionDigits: 2 })}
-          </span>
-          <span className="text-xs text-muted-foreground">MXN</span>
+        <div className="mt-auto flex items-end justify-between pt-2">
+          <div className="flex flex-col">
+            <span className="text-lg font-black text-foreground">
+              {formatMXN(priceWithIVA)}
+            </span>
+            <span className="text-[10px] text-muted-foreground">IVA incluido</span>
+          </div>
         </div>
       </div>
     </div>

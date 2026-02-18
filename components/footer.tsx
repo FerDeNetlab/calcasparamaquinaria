@@ -11,7 +11,14 @@ const quickLinks = [
 ]
 
 const brandLinks = [
-  "CAT", "Komatsu", "Volvo", "John Deere", "JCB", "Case", "Terex", "JLG",
+  { label: "CAT", value: "CAT" },
+  { label: "Komatsu", value: "Komatsu" },
+  { label: "Volvo", value: "Volvo" },
+  { label: "John Deere", value: "John Deere" },
+  { label: "JCB", value: "JCB" },
+  { label: "Case", value: "Case" },
+  { label: "Terex", value: "Terex" },
+  { label: "JLG", value: "JLG" },
 ]
 
 export function Footer() {
@@ -90,12 +97,12 @@ export function Footer() {
             </h3>
             <ul className="flex flex-col gap-3">
               {brandLinks.map((brand) => (
-                <li key={brand}>
+                <li key={brand.value}>
                   <Link
-                    href={`/catalogo?marca=${brand.toLowerCase()}`}
+                    href={`/catalogo?marca=${encodeURIComponent(brand.value)}`}
                     className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
-                    Calcas {brand}
+                    Calcas {brand.label}
                   </Link>
                 </li>
               ))}
