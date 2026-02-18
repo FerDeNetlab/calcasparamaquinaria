@@ -10,7 +10,7 @@ export interface OdooProduct {
     categ_id: [number, string] | false
     default_code: string | false
     description_sale: string | false
-    website_published: boolean
+    x_available_ecommerce: boolean
 }
 
 export interface OdooCategory {
@@ -86,7 +86,7 @@ async function execute(
 
 const PUBLISHED_FILTER: unknown[] = [
     ['sale_ok', '=', true],
-    ['website_published', '=', true],
+    ['x_available_ecommerce', '=', true],
 ]
 
 // Fields we fetch for product lists (lightweight — no images)
@@ -107,7 +107,7 @@ const DETAIL_FIELDS = [
     'categ_id',
     'default_code',
     'description_sale',
-    'website_published',
+    'x_available_ecommerce',
 ]
 
 // ─── Public API ─────────────────────────────────────────────────────────────
