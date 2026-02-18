@@ -66,27 +66,39 @@ export function CartView() {
     const SITE = "https://calcasparamaquinaria.mx"
 
     const productLines = items
-      .map((item) => {
+      .map((item, i) => {
         const url = item.productUrl.startsWith("http")
           ? item.productUrl
           : `${SITE}${item.productUrl}`
-        const qty = item.quantity > 1 ? ` (x${item.quantity})` : ""
-        return `*${item.name}*${qty} - ${url}`
+        const qty = item.quantity > 1 ? ` ×${item.quantity}` : ""
+        return `  ${i + 1}. 🏷️ *${item.name}*${qty}\n     🔗 ${url}\n     💰 ${formatMXN(item.price * item.quantity)}`
       })
-      .join("\n")
+      .join("\n\n")
 
     const msg = [
-      `Hola, soy *${nombre.trim()}*, me gustaría comprar los siguientes productos:`,
+      `👋 ¡Hola! Soy *${nombre.trim()}* y me gustaría hacer un pedido.`,
+      ``,
+      `━━━━━━━━━━━━━━━━━━━━`,
+      `🛒 *PRODUCTOS SELECCIONADOS*`,
+      `━━━━━━━━━━━━━━━━━━━━`,
       ``,
       productLines,
       ``,
-      `mi correo es ${correo.trim()}`,
-      `mi dirección de envío es ${direccion.trim()}`,
-      `necesito factura: ${factura === "si" ? "Sí" : "No"}`,
+      `━━━━━━━━━━━━━━━━━━━━`,
+      `💵 *TOTAL: ${formatMXN(subtotal)}* _(IVA incluido)_`,
+      `━━━━━━━━━━━━━━━━━━━━`,
+      ``,
+      `📋 *MIS DATOS*`,
+      `📧 Correo: ${correo.trim()}`,
+      `📦 Dirección de envío: ${direccion.trim()}`,
+      `🧾 Factura: ${factura === "si" ? "✅ Sí" : "❌ No"}`,
+      ``,
+      `¡Quedo en espera de su confirmación! 😊`,
     ].join("\n")
 
     return msg
   }
+
 
   function handleSendWhatsApp() {
     if (!validate()) return
