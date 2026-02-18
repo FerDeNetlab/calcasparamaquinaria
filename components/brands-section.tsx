@@ -1,3 +1,4 @@
+import Link from "next/link"
 import Image from "next/image"
 
 const brands = [
@@ -6,7 +7,7 @@ const brands = [
   { name: "Komatsu", src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/komatsu-qH5Rhoq8YueOkOApalE49Wa1Qb29Xa.png" },
   { name: "John Deere", src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/deere-KUEMgOj4TyXW7wZqxjL89yQEJVmPej.png" },
   { name: "JCB", src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/jcb-XbPsN6IA2mRABQDJ21d2HxQXFptFRV.png" },
-  { name: "Case Construction", src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/case-JDX2HKA0Tlau8LTAvBv6YO3x25Wv7q.png" },
+  { name: "Case", src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/case-JDX2HKA0Tlau8LTAvBv6YO3x25Wv7q.png" },
   { name: "Terex", src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/terex-oiidT43cZtot4ySxfWDijlH57kLkE5.png" },
   { name: "JLG", src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/jlg-JYmHcEUw6VHucj3axYSTe0X9lwPtEc.png" },
   { name: "Skyjack", src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/skyjack-KUPdGgTCbdxAd0yGvVGwknE0yTMEog.png" },
@@ -42,8 +43,10 @@ export function BrandsSection() {
         {/* Brands Grid */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
           {brands.map((brand) => (
-            <div
+            <Link
               key={brand.name}
+              href={`/catalogo?marca=${encodeURIComponent(brand.name)}`}
+              title={`Ver calcas para ${brand.name}`}
               className="group flex items-center justify-center rounded-lg border border-border bg-card p-4 transition-all duration-300 hover:border-primary/50 hover:bg-primary/5 h-20"
             >
               <div className="relative w-full h-full">
@@ -55,7 +58,7 @@ export function BrandsSection() {
                   className="object-contain p-1 opacity-50 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0"
                 />
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

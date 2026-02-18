@@ -1,4 +1,5 @@
 import 'server-only'
+import { extractBrand } from './brands'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -112,7 +113,10 @@ const DETAIL_FIELDS = [
 // ─── Public API ─────────────────────────────────────────────────────────────
 
 /**
- * Get published products with pagination, optional category and search filters.
+ * Get published products with pagination, optional category, search, and brand filters.
+ *
+ * Brand filtering is done client-side (post-fetch) using extractBrand() to avoid
+ * the ilike substring collision (e.g. searching "CAT" would also match "BOBCAT").
  */
 export async function getProducts(
     page = 1,
@@ -127,14 +131,40 @@ export async function getProducts(
         domain.push(['categ_id.name', '=', category])
     }
 
-    if (brand) {
-        domain.push(['name', 'ilike', brand])
-    }
-
     if (search) {
         domain.push(['name', 'ilike', search])
     }
 
+    // When filtering by brand we need to fetch ALL matching products first,
+    // then post-filter by exact brand using extractBrand(), then paginate.
+    if (brand) {
+        // Fetch all (up to 5000) without pagination so we can filter accurately
+        const allProducts: OdooProduct[] = await execute(
+            'product.template',
+            'search_read',
+            [domain],
+            { fields: LIST_FIELDS, limit: 5000, order: 'name asc' }
+        )
+
+        // Post-filter: only keep products whose extracted brand matches exactly
+        const filtered = allProducts.filter(
+            (p) => extractBrand(p.name) === brand
+        )
+
+        const total = filtered.length
+        const offset = (page - 1) * limit
+        const products = filtered.slice(offset, offset + limit)
+
+        return {
+            products,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        }
+    }
+
+    // No brand filter — use normal paginated query
     const offset = (page - 1) * limit
 
     const [products, total] = await Promise.all([
@@ -155,6 +185,7 @@ export async function getProducts(
         totalPages: Math.ceil(total / limit),
     }
 }
+
 
 /**
  * Get all product names for brand extraction (lightweight).
