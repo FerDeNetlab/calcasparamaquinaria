@@ -70,34 +70,35 @@ export function CartView() {
         const url = item.productUrl.startsWith("http")
           ? item.productUrl
           : `${SITE}${item.productUrl}`
-        const qty = item.quantity > 1 ? ` ×${item.quantity}` : ""
-        return `  ${i + 1}. 🏷️ *${item.name}*${qty}\n     🔗 ${url}\n     💰 ${formatMXN(item.price * item.quantity)}`
+        const qty = item.quantity > 1 ? ` x${item.quantity}` : ""
+        return `  ${i + 1}. *${item.name}*${qty}\n     ${url}\n     ${formatMXN(item.price * item.quantity)}`
       })
       .join("\n\n")
 
     const msg = [
-      `👋 ¡Hola! Soy *${nombre.trim()}* y me gustaría hacer un pedido.`,
+      `Hola, soy *${nombre.trim()}* y me gustaria hacer un pedido.`,
       ``,
-      `━━━━━━━━━━━━━━━━━━━━`,
-      `🛒 *PRODUCTOS SELECCIONADOS*`,
-      `━━━━━━━━━━━━━━━━━━━━`,
+      `--------------------`,
+      `*PRODUCTOS SELECCIONADOS*`,
+      `--------------------`,
       ``,
       productLines,
       ``,
-      `━━━━━━━━━━━━━━━━━━━━`,
-      `💵 *TOTAL: ${formatMXN(subtotal)}* _(IVA incluido)_`,
-      `━━━━━━━━━━━━━━━━━━━━`,
+      `--------------------`,
+      `*TOTAL: ${formatMXN(subtotal)}* _(IVA incluido)_`,
+      `--------------------`,
       ``,
-      `📋 *MIS DATOS*`,
-      `📧 Correo: ${correo.trim()}`,
-      `📦 Dirección de envío: ${direccion.trim()}`,
-      `🧾 Factura: ${factura === "si" ? "✅ Sí" : "❌ No"}`,
+      `*MIS DATOS*`,
+      `Correo: ${correo.trim()}`,
+      `Direccion de envio: ${direccion.trim()}`,
+      `Factura: ${factura === "si" ? "Si" : "No"}`,
       ``,
-      `¡Quedo en espera de su confirmación! 😊`,
+      `Quedo en espera de su confirmacion.`,
     ].join("\n")
 
     return msg
   }
+
 
 
   function handleSendWhatsApp() {
