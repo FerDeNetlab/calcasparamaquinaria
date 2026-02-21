@@ -1,15 +1,19 @@
 import type { MetadataRoute } from 'next'
-import { getAllProductsForSitemap, getCategories } from '@/lib/odoo'
+import { getAllProductsForSitemap, getCategories, getAllProductNames } from '@/lib/odoo'
+import { extractBrands } from '@/lib/brands'
 import { productUrl } from '@/lib/slugs'
 
 const BASE_URL = 'https://calcasparamaquinaria.mx'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    // Fetch all products and categories in parallel
-    const [products, categories] = await Promise.all([
+    // Fetch all products, categories, and brands in parallel
+    const [products, categories, allNames] = await Promise.all([
         getAllProductsForSitemap(),
         getCategories(),
+        getAllProductNames(),
     ])
+
+    const brands = extractBrands(allNames)
 
     // ─── Static pages ─────────────────────────────────────────────────────
     const staticPages: MetadataRoute.Sitemap = [
@@ -27,7 +31,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
     ]
 
-    // ─── Category pages (high SEO value) ──────────────────────────────────
+    // ─── Brand pages (high SEO value) ─────────────────────────────────────
+    const brandPages: MetadataRoute.Sitemap = brands.map((brand) => ({
+        url: `${BASE_URL}/marcas/${brand.slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.85,
+    }))
+
+    // ─── Category pages ───────────────────────────────────────────────────
     const categoryPages: MetadataRoute.Sitemap = categories.map((cat) => ({
         url: `${BASE_URL}/catalogo?categoria=${encodeURIComponent(cat.name)}`,
         lastModified: new Date(),
@@ -35,7 +47,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
     }))
 
-    // ─── Individual product pages (SEO-friendly URLs) ─────────────────────
+    // ─── Individual product pages ─────────────────────────────────────────
     const productPages: MetadataRoute.Sitemap = products.map((product) => ({
         url: `${BASE_URL}${productUrl(product.id, product.name, product.categ_id ? product.categ_id[1] : undefined)}`,
         lastModified: new Date(product.write_date),
@@ -43,5 +55,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.6,
     }))
 
-    return [...staticPages, ...categoryPages, ...productPages]
+    return [...staticPages, ...brandPages, ...categoryPages, ...productPages]
 }
