@@ -37,7 +37,7 @@ export function ProductDetail({ product }: { product: OdooProduct }) {
   const { addToCart } = useCart()
 
   const categoryName = product.categ_id ? product.categ_id[1] : ""
-  const imageUrl = `/api/product-image/${product.id}?size=1024`
+  const imageUrl = `/api/product-image/${product.id}/1024`
   const priceWithIVA = withIVA(product.list_price)
 
   function handleAddToCart() {

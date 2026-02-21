@@ -253,7 +253,7 @@ export function CatalogGrid({
               >
                 <div className="relative aspect-square overflow-hidden bg-white p-4">
                   <Image
-                    src={`/api/product-image/${product.id}?size=256`}
+                    src={`/api/product-image/${product.id}/256`}
                     alt={product.name}
                     fill
                     className="object-contain p-6 transition-transform duration-500 group-hover:scale-110"
@@ -326,7 +326,7 @@ export function CatalogGrid({
               >
                 <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
                   <Image
-                    src={`/api/product-image/${product.id}?size=128`}
+                    src={`/api/product-image/${product.id}/128`}
                     alt={product.name}
                     fill
                     className="object-contain p-2"

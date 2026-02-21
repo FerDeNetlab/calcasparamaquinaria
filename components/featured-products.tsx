@@ -14,7 +14,7 @@ function ProductCard({ product }: { product: OdooProduct }) {
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-white p-4">
         <Image
-          src={`/api/product-image/${product.id}?size=256`}
+          src={`/api/product-image/${product.id}/256`}
           alt={product.name}
           fill
           className="object-contain p-6 transition-transform duration-500 group-hover:scale-110"

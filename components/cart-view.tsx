@@ -161,7 +161,7 @@ export function CartView() {
                 >
                   <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
                     <Image
-                      src={`/api/product-image/${item.id}?size=128`}
+                      src={`/api/product-image/${item.id}/128`}
                       alt={item.name}
                       fill
                       className="object-contain p-2"
