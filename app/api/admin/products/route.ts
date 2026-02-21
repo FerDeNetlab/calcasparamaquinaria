@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getProducts, updateProduct, deleteProduct } from '@/lib/odoo'
 
-// Simple password protection via env variable
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'calcas2024admin'
+// Password from Vercel env variable (no default — must be configured)
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || ''
 
 function unauthorized() {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
