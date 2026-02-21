@@ -305,3 +305,20 @@ export async function getAllProductsForSitemap(): Promise<
         }
     )
 }
+
+/**
+ * Get all published products with full data for Google Merchant Center feed.
+ */
+export async function getAllProductsForFeed(): Promise<OdooProduct[]> {
+    return execute(
+        'product.template',
+        'search_read',
+        [PUBLISHED_FILTER],
+        {
+            fields: LIST_FIELDS,
+            limit: 5000,
+            order: 'id asc',
+        }
+    )
+}
+
