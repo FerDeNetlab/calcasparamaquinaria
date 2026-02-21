@@ -49,17 +49,17 @@ export function HeroSection() {
                     size="lg"
                     className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90 font-bold uppercase tracking-wider text-base px-8"
                   >
-                    Ver Catalogo
+                    Encontrar Mi Calca
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-                <a href="https://wa.me/523315289366" target="_blank" rel="noopener noreferrer">
+                <a href="https://wa.me/523315289366?text=Hola%2C%20quiero%20cotizar%20calcas%20para%20mi%20maquinaria" target="_blank" rel="noopener noreferrer">
                   <Button
                     size="lg"
                     variant="outline"
                     className="w-full sm:w-auto border-border text-foreground hover:bg-secondary hover:text-primary font-bold uppercase tracking-wider text-base px-8"
                   >
-                    Cotizar Ahora
+                    Cotizar por WhatsApp
                   </Button>
                 </a>
               </div>

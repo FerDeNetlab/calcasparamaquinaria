@@ -78,12 +78,47 @@ export default async function ProductoPage({ params }: Props) {
             url: `https://calcasparamaquinaria.mx${canonicalPath}`,
             priceCurrency: "MXN",
             price: product.list_price,
+            priceValidUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
             availability: "https://schema.org/InStock",
             seller: {
                 "@type": "Organization",
                 name: "Calcas para Maquinaria",
             },
+            shippingDetails: {
+                "@type": "OfferShippingDetails",
+                shippingDestination: {
+                    "@type": "DefinedRegion",
+                    addressCountry: "MX",
+                },
+                deliveryTime: {
+                    "@type": "ShippingDeliveryTime",
+                    businessDays: {
+                        "@type": "QuantitativeValue",
+                        minValue: 3,
+                        maxValue: 7,
+                    },
+                },
+            },
+            hasMerchantReturnPolicy: {
+                "@type": "MerchantReturnPolicy",
+                applicableCountry: "MX",
+                returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+                merchantReturnDays: 30,
+                returnMethod: "https://schema.org/ReturnByMail",
+            },
         },
+    }
+
+    // BreadcrumbList JSON-LD
+    const breadcrumbJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Inicio", item: "https://calcasparamaquinaria.mx" },
+            { "@type": "ListItem", position: 2, name: "Catálogo", item: "https://calcasparamaquinaria.mx/catalogo" },
+            ...(categoryName ? [{ "@type": "ListItem", position: 3, name: categoryName, item: `https://calcasparamaquinaria.mx/catalogo?categoria=${encodeURIComponent(categoryName)}` }] : []),
+            { "@type": "ListItem", position: categoryName ? 4 : 3, name: product.name },
+        ],
     }
 
     return (
@@ -91,6 +126,10 @@ export default async function ProductoPage({ params }: Props) {
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
             <Navbar />
             <ProductDetail product={product} />

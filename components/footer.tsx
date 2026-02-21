@@ -42,7 +42,7 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-3">
               <a
-                href="https://facebook.com"
+                href="https://facebook.com" // TODO: Reemplazar con URL real de Facebook
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-9 w-9 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
@@ -51,7 +51,7 @@ export function Footer() {
                 <span className="sr-only">Facebook</span>
               </a>
               <a
-                href="https://instagram.com"
+                href="https://instagram.com" // TODO: Reemplazar con URL real de Instagram
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-9 w-9 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
@@ -158,7 +158,7 @@ export function Footer() {
               height={30}
               className="h-5 w-auto opacity-50"
             />
-            <span>Publim S.A. de C.V. Todos los derechos reservados.</span>
+            <span>© {new Date().getFullYear()} Publim S.A. de C.V. Todos los derechos reservados.</span>
           </div>
           <div className="flex gap-4">
             <Link href="/aviso-de-privacidad" className="hover:text-primary transition-colors">

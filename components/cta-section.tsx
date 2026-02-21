@@ -27,15 +27,18 @@ export function CtaSection() {
               </span>
             </div>
             <h2 className="text-balance text-3xl font-black uppercase leading-tight tracking-tight text-foreground md:text-4xl lg:text-5xl">
-              No encuentra el modelo que busca?
+              ¿No encuentra el modelo que busca?
             </h2>
             <p className="max-w-lg text-lg leading-relaxed text-muted-foreground">
-              Con mas de <strong className="text-foreground">7,000 modelos</strong> en catalogo,
+              Con más de <strong className="text-foreground">7,000 modelos</strong> en catálogo,
               tenemos lo que necesita. Y si no lo tenemos, lo{" "}
-              <strong className="text-foreground">fabricamos a su medida</strong> en tiempo record.
+              <strong className="text-foreground">fabricamos a su medida</strong> en tiempo récord.
+            </p>
+            <p className="text-sm font-semibold text-primary">
+              ⭐ Más de 500 empresas ya confían en nuestras calcas
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <a href="https://wa.me/523315289366" target="_blank" rel="noopener noreferrer">
+              <a href="https://wa.me/523315289366?text=Hola%2C%20necesito%20cotizar%20calcas%20personalizadas%20para%20mi%20maquinaria" target="_blank" rel="noopener noreferrer">
                 <Button
                   size="lg"
                   className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold uppercase tracking-wider"
