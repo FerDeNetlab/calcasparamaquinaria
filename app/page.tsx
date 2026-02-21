@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { TrustBanner } from "@/components/trust-banner"
+
 import { Navbar } from "@/components/navbar"
 import { HeroSection } from "@/components/hero-section"
 import { BrandsSection } from "@/components/brands-section"
@@ -104,7 +104,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <TrustBanner />
+
       <Navbar />
       <HeroSection />
       <BrandsSection />

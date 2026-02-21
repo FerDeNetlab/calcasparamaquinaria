@@ -68,7 +68,7 @@ export function ProductDetail({ product }: { product: OdooProduct }) {
   }
 
   return (
-    <section className="bg-background pt-20">
+    <section className="bg-background pt-28">
       {/* Breadcrumb */}
       <div className="border-b border-border bg-secondary">
         <div className="mx-auto max-w-7xl px-4 py-3 lg:px-8">

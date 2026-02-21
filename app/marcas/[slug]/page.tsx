@@ -104,7 +104,7 @@ export default async function BrandPage({ params, searchParams }: Props) {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
             <Navbar />
-            <section className="bg-background pt-20">
+            <section className="bg-background pt-28">
                 {/* Brand Header */}
                 <div className="border-b border-border bg-secondary">
                     <div className="mx-auto max-w-7xl px-4 py-12 lg:px-8 lg:py-16">
