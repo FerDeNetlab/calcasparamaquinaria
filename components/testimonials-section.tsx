@@ -2,24 +2,21 @@ import { Star, Quote } from "lucide-react"
 
 const testimonials = [
     {
-        name: "Roberto Hernández",
-        role: "Gerente de Flotilla",
-        company: "Constructora del Norte",
-        text: "Llevamos 3 años comprando con ellos. Las calcas son idénticas a las originales y resisten lluvia, sol y tierra sin problema. Excelente calidad.",
+        name: "José Magaña",
+        company: "TRACSA",
+        text: "Excelente servicio, tiempos de entrega excelentes y productos de altísima calidad. Cuentan con envíos a toda la República. 100% recomendado.",
         rating: 5,
     },
     {
-        name: "María Luisa Torres",
-        role: "Encargada de Mantenimiento",
-        company: "Grupo Minero Occidental",
-        text: "Necesitábamos calcas para 12 excavadoras CAT y nos las entregaron en tiempo récord. La atención por WhatsApp fue muy rápida y profesional.",
+        name: "Margarito Mijangos Santos",
+        company: "Kubota México",
+        text: "En Kubota México estamos muy satisfechos con rapidez de respuesta a nuestros requerimientos, las etiquetas de muy buena calidad.",
         rating: 5,
     },
     {
-        name: "Carlos Martínez",
-        role: "Propietario",
-        company: "Renta de Maquinaria GMC",
-        text: "Lo que más me gusta es que tienen prácticamente cualquier modelo. He pedido calcas para Komatsu, Volvo y JCB y todas han quedado perfectas.",
+        name: "Jesus Esquivel",
+        company: "GDL",
+        text: "Calcas de la mejor calidad. Todas las marcas y modelos a buen precio. 13 años trabajando con ellos, pedidos en tiempo y forma.",
         rating: 5,
     },
 ]
@@ -40,9 +37,16 @@ export function TestimonialsSection() {
                     <h2 className="text-balance text-3xl font-black uppercase tracking-tight text-foreground md:text-4xl lg:text-5xl">
                         Lo que dicen nuestros clientes
                     </h2>
-                    <p className="mx-auto mt-4 max-w-2xl text-muted-foreground leading-relaxed">
-                        Empresas y operadores de toda la República confían en nuestras calcomanías para mantener su maquinaria como nueva.
-                    </p>
+                    {/* Google aggregate rating */}
+                    <div className="mx-auto mt-5 flex items-center justify-center gap-2">
+                        <div className="flex gap-0.5">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                                <Star key={i} className="h-5 w-5 fill-primary text-primary" />
+                            ))}
+                        </div>
+                        <span className="text-lg font-bold text-foreground">4.9</span>
+                        <span className="text-sm text-muted-foreground">— 32 reseñas en Google</span>
+                    </div>
                 </div>
 
                 {/* Testimonials Grid */}
@@ -76,7 +80,7 @@ export function TestimonialsSection() {
                                     {testimonial.name}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
-                                    {testimonial.role} — {testimonial.company}
+                                    {testimonial.company}
                                 </p>
                             </div>
                         </div>
