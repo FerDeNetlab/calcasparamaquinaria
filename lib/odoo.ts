@@ -322,3 +322,30 @@ export async function getAllProductsForFeed(): Promise<OdooProduct[]> {
     )
 }
 
+// ─── Admin API (write operations) ───────────────────────────────────────────
+
+/**
+ * Update a product's fields in Odoo.
+ * Only allows updating name, list_price, description_sale, default_code.
+ */
+export async function updateProduct(
+    id: number,
+    data: Partial<Pick<OdooProduct, 'name' | 'list_price' | 'description_sale' | 'default_code'>>
+): Promise<boolean> {
+    return execute(
+        'product.template',
+        'write',
+        [[id], data]
+    )
+}
+
+/**
+ * Delete (unlink) a product from Odoo.
+ */
+export async function deleteProduct(id: number): Promise<boolean> {
+    return execute(
+        'product.template',
+        'unlink',
+        [[id]]
+    )
+}
