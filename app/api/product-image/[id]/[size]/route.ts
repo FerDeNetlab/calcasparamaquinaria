@@ -23,7 +23,20 @@ export async function GET(
         const base64 = await getProductImage(productId, size)
 
         if (!base64) {
-            return NextResponse.json({ error: 'Image not found' }, { status: 404 })
+            // Return a 1x1 transparent PNG instead of JSON error
+            // (Google Merchant Center expects image data, not JSON)
+            const transparentPng = Buffer.from(
+                'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+                'base64'
+            )
+            return new NextResponse(transparentPng, {
+                status: 200,
+                headers: {
+                    'Content-Type': 'image/png',
+                    'Content-Length': transparentPng.length.toString(),
+                    'Cache-Control': 'public, s-maxage=3600, max-age=3600',
+                },
+            })
         }
 
         // Decode base64 to binary

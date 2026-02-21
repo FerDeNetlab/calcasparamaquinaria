@@ -5,6 +5,9 @@ import { productUrl } from '@/lib/slugs'
 
 const BASE_URL = 'https://calcasparamaquinaria.mx'
 
+// Placeholder image for products without one (Google REQUIRES a valid image)
+const PLACEHOLDER_IMAGE = `${BASE_URL}/placeholder-product.png`
+
 // Cache the feed for 6 hours (Merchant Center fetches daily)
 export const revalidate = 21600
 
@@ -17,6 +20,38 @@ function escapeXml(str: string): string {
         .replace(/'/g, '&apos;')
 }
 
+/**
+ * Convert ALL CAPS product name to Title Case.
+ * Keeps brand abbreviations (CAT, JCB, JLG, P&H) uppercase.
+ * Example: "JUEGO DE CALCAS DE RESTAURACION PARA CAT 320D2"
+ *       → "Juego de Calcas de Restauración para Cat 320D2"
+ */
+const KEEP_UPPERCASE = new Set(['CAT', 'JCB', 'JLG', 'P&H', 'USA', 'MX'])
+const LOWERCASE_WORDS = new Set(['de', 'del', 'para', 'por', 'con', 'en', 'y', 'o', 'la', 'el', 'las', 'los', 'un', 'una'])
+
+function toTitleCase(text: string): string {
+    return text
+        .split(/\s+/)
+        .map((word, index) => {
+            const upper = word.toUpperCase()
+
+            // Keep known abbreviations uppercase
+            if (KEEP_UPPERCASE.has(upper)) return upper
+
+            // Keep model numbers (contain digits) as-is
+            if (/\d/.test(word)) return word.toUpperCase()
+
+            const lower = word.toLowerCase()
+
+            // Lowercase articles/prepositions (except first word)
+            if (index > 0 && LOWERCASE_WORDS.has(lower)) return lower
+
+            // Capitalize first letter
+            return lower.charAt(0).toUpperCase() + lower.slice(1)
+        })
+        .join(' ')
+}
+
 export async function GET() {
     try {
         const products = await getAllProductsForFeed()
@@ -25,8 +60,11 @@ export async function GET() {
             const brand = extractBrand(product.name) || 'Genérico'
             const categoryName = product.categ_id ? product.categ_id[1] : 'Maquinaria Pesada'
             const url = `${BASE_URL}${productUrl(product.id, product.name, categoryName)}`
-            const imageUrl = `${BASE_URL}/api/product-image/${product.id}/1024`
+            const imageUrl = `${BASE_URL}/api/product-image/${product.id}/512`
             const price = `${product.list_price.toFixed(2)} MXN`
+
+            // Title Case for Merchant Center compliance
+            const title = toTitleCase(product.name)
 
             // Build a description from available data
             let description = product.description_sale || ''
@@ -36,7 +74,7 @@ export async function GET() {
 
             return `    <item>
       <g:id>${product.id}</g:id>
-      <title>${escapeXml(product.name)}</title>
+      <title>${escapeXml(title)}</title>
       <description>${escapeXml(description)}</description>
       <link>${escapeXml(url)}</link>
       <g:image_link>${escapeXml(imageUrl)}</g:image_link>
