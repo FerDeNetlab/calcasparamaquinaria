@@ -5,9 +5,6 @@ import { productUrl } from '@/lib/slugs'
 
 const BASE_URL = 'https://calcasparamaquinaria.mx'
 
-// Placeholder image for products without one (Google REQUIRES a valid image)
-const PLACEHOLDER_IMAGE = `${BASE_URL}/placeholder-product.png`
-
 // Cache the feed for 6 hours (Merchant Center fetches daily)
 export const revalidate = 21600
 
@@ -21,35 +18,36 @@ function escapeXml(str: string): string {
 }
 
 /**
- * Convert ALL CAPS product name to Title Case.
- * Keeps brand abbreviations (CAT, JCB, JLG, P&H) uppercase.
- * Example: "JUEGO DE CALCAS DE RESTAURACION PARA CAT 320D2"
- *       → "Juego de Calcas de Restauración para Cat 320D2"
+ * Convert ALL CAPS text to Title Case.
+ * Keeps brand abbreviations and model numbers intact.
  */
-const KEEP_UPPERCASE = new Set(['CAT', 'JCB', 'JLG', 'P&H', 'USA', 'MX', 'II', 'III', 'IV', 'HP'])
+const KEEP_UPPERCASE = new Set(['CAT', 'JCB', 'JLG', 'P&H', 'USA', 'MX', 'II', 'III', 'IV', 'HP', 'HD', 'LC', 'LN'])
 const LOWERCASE_WORDS = new Set(['de', 'del', 'para', 'por', 'con', 'en', 'y', 'o', 'la', 'el', 'las', 'los', 'un', 'una'])
 
 function toTitleCase(text: string): string {
-    // First force everything to lowercase to guarantee no leftover caps
-    const lower = text.toLowerCase()
+    const lower = text.toLowerCase().trim()
     return lower
         .split(/\s+/)
         .map((word, index) => {
             const upper = word.toUpperCase()
-
-            // Keep known abbreviations uppercase
             if (KEEP_UPPERCASE.has(upper)) return upper
-
-            // Keep model numbers (contain digits) in original mixed case
             if (/\d/.test(word)) return word.toUpperCase()
-
-            // Lowercase articles/prepositions (except first word)
             if (index > 0 && LOWERCASE_WORDS.has(word)) return word
-
-            // Capitalize first letter
             return word.charAt(0).toUpperCase() + word.slice(1)
         })
         .join(' ')
+}
+
+/**
+ * Convert Odoo category name to a readable product type.
+ * "COMPRESOR" → "Compresor", "ALL" → "Maquinaria Pesada"
+ */
+function formatCategory(category: string): string {
+    if (!category || category === 'All' || category.toUpperCase() === 'ALL') {
+        return 'Calcomanías > Maquinaria Pesada'
+    }
+    const name = toTitleCase(category)
+    return `Calcomanías > ${name}`
 }
 
 export async function GET() {
@@ -63,27 +61,29 @@ export async function GET() {
             const imageUrl = `${BASE_URL}/api/product-image/${product.id}/512`
             const price = `${product.list_price.toFixed(2)} MXN`
 
-            // Title Case for Merchant Center compliance
+            // Title Case + trim trailing whitespace
             const title = toTitleCase(product.name)
 
-            // Build a description from available data
-            let description = product.description_sale || ''
-            if (!description) {
-                description = `Kit de calcomanías de restauración para ${brand} ${categoryName}. Fabricadas en vinilo premium con +6 años de duración a la intemperie. Envío a toda la República Mexicana.`
-            }
+            // Product type as Google category path
+            const productType = formatCategory(categoryName)
+
+            // Unique description per product
+            const desc = product.description_sale
+                ? product.description_sale.trim()
+                : `Calcomanías de restauración ${title}. Kit completo de calcas ${brand} fabricadas en vinilo premium con más de 6 años de duración a la intemperie. Envío gratis a toda la República Mexicana.`
 
             return `    <item>
       <g:id>${product.id}</g:id>
-      <title>${escapeXml(title)}</title>
-      <description>${escapeXml(description)}</description>
-      <link>${escapeXml(url)}</link>
+      <g:title>${escapeXml(title)}</g:title>
+      <g:description>${escapeXml(desc)}</g:description>
+      <g:link>${escapeXml(url)}</g:link>
       <g:image_link>${escapeXml(imageUrl)}</g:image_link>
       <g:availability>in_stock</g:availability>
       <g:price>${price}</g:price>
       <g:brand>${escapeXml(brand)}</g:brand>
       <g:condition>new</g:condition>
-      <g:product_type>${escapeXml(categoryName)}</g:product_type>
-      <g:identifier_exists>false</g:identifier_exists>
+      <g:product_type>${escapeXml(productType)}</g:product_type>
+      <g:identifier_exists>no</g:identifier_exists>
       <g:shipping>
         <g:country>MX</g:country>
         <g:service>Estándar</g:service>
@@ -95,9 +95,9 @@ export async function GET() {
         const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
   <channel>
-    <title>Calcas para Maquinaria - Catálogo de Productos</title>
+    <title>Calcas para Maquinaria</title>
     <link>${BASE_URL}</link>
-    <description>Calcomanías de alta calidad para maquinaria pesada. Más de 7,000 modelos disponibles.</description>
+    <description>Calcomanías para maquinaria pesada - calcasparamaquinaria.mx</description>
 ${items.join('\n')}
   </channel>
 </rss>`
