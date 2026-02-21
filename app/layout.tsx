@@ -50,6 +50,9 @@ const _inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://calcasparamaquinaria.mx'),
+  verification: {
+    google: 'c6eUd9y9djgY2AIIIZNcBwbvFhToawu2GL0HaexPZ5c',
+  },
   title: {
     default: 'Calcas para Maquinaria Pesada | calcasparamaquinaria.mx',
     template: '%s | Calcas para Maquinaria',
