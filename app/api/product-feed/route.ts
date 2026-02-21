@@ -26,11 +26,13 @@ function escapeXml(str: string): string {
  * Example: "JUEGO DE CALCAS DE RESTAURACION PARA CAT 320D2"
  *       → "Juego de Calcas de Restauración para Cat 320D2"
  */
-const KEEP_UPPERCASE = new Set(['CAT', 'JCB', 'JLG', 'P&H', 'USA', 'MX'])
+const KEEP_UPPERCASE = new Set(['CAT', 'JCB', 'JLG', 'P&H', 'USA', 'MX', 'II', 'III', 'IV', 'HP'])
 const LOWERCASE_WORDS = new Set(['de', 'del', 'para', 'por', 'con', 'en', 'y', 'o', 'la', 'el', 'las', 'los', 'un', 'una'])
 
 function toTitleCase(text: string): string {
-    return text
+    // First force everything to lowercase to guarantee no leftover caps
+    const lower = text.toLowerCase()
+    return lower
         .split(/\s+/)
         .map((word, index) => {
             const upper = word.toUpperCase()
@@ -38,16 +40,14 @@ function toTitleCase(text: string): string {
             // Keep known abbreviations uppercase
             if (KEEP_UPPERCASE.has(upper)) return upper
 
-            // Keep model numbers (contain digits) as-is
+            // Keep model numbers (contain digits) in original mixed case
             if (/\d/.test(word)) return word.toUpperCase()
 
-            const lower = word.toLowerCase()
-
             // Lowercase articles/prepositions (except first word)
-            if (index > 0 && LOWERCASE_WORDS.has(lower)) return lower
+            if (index > 0 && LOWERCASE_WORDS.has(word)) return word
 
             // Capitalize first letter
-            return lower.charAt(0).toUpperCase() + lower.slice(1)
+            return word.charAt(0).toUpperCase() + word.slice(1)
         })
         .join(' ')
 }
