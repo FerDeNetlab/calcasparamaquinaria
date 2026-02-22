@@ -21,7 +21,7 @@ export default function robots(): MetadataRoute.Robots {
                 disallow: ['/api/', '/admin'],
             },
         ],
-        sitemap: 'https://calcasparamaquinaria.mx/sitemap.xml',
+        sitemap: 'https://www.calcasparamaquinaria.mx/sitemap.xml',
     }
 }
 

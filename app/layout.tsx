@@ -9,7 +9,7 @@ const organizationJsonLd = {
   '@type': 'Organization',
   name: 'Calcas para Maquinaria',
   legalName: 'Publim S.A. de C.V.',
-  url: 'https://calcasparamaquinaria.mx',
+  url: 'https://www.calcasparamaquinaria.mx',
   logo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/RASGADO%20COM%20MX%20w%20v2-pwTMy809i4tSdCEEEOcXvXlI1HdQvM.png',
   description: 'Calcomanías de alta calidad para maquinaria pesada. +7,000 modelos disponibles.',
   address: {
@@ -35,12 +35,12 @@ const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'Calcas para Maquinaria',
-  url: 'https://calcasparamaquinaria.mx',
+  url: 'https://www.calcasparamaquinaria.mx',
   potentialAction: {
     '@type': 'SearchAction',
     target: {
       '@type': 'EntryPoint',
-      urlTemplate: 'https://calcasparamaquinaria.mx/catalogo?buscar={search_term_string}',
+      urlTemplate: 'https://www.calcasparamaquinaria.mx/catalogo?buscar={search_term_string}',
     },
     'query-input': 'required name=search_term_string',
   },
@@ -49,7 +49,7 @@ const websiteJsonLd = {
 const _inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://calcasparamaquinaria.mx'),
+  metadataBase: new URL('https://www.calcasparamaquinaria.mx'),
   verification: {
     google: 'c6eUd9y9djgY2AIIIZNcBwbvFhToawu2GL0HaexPZ5c',
   },
@@ -83,7 +83,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'es_MX',
-    url: 'https://calcasparamaquinaria.mx',
+    url: 'https://www.calcasparamaquinaria.mx',
     siteName: 'Calcas para Maquinaria',
     title: 'Calcas para Maquinaria Pesada | +7,000 Modelos',
     description: 'Calcomanias de alta calidad para maquinaria pesada. CAT, Komatsu, Volvo, JCB, Deere y mas marcas. Envio a toda la Republica.',
@@ -103,7 +103,7 @@ export const metadata: Metadata = {
     images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/320CAT_2-wyWidLOuXCLdHtdoeZv3paV4g6rROr.png'],
   },
   alternates: {
-    canonical: 'https://calcasparamaquinaria.mx',
+    canonical: 'https://www.calcasparamaquinaria.mx',
   },
   robots: {
     index: true,

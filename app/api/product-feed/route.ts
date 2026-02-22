@@ -3,7 +3,7 @@ import { getAllProductsForFeed } from '@/lib/odoo'
 import { extractBrand } from '@/lib/brands'
 import { productUrl } from '@/lib/slugs'
 
-const BASE_URL = 'https://calcasparamaquinaria.mx'
+const BASE_URL = 'https://www.calcasparamaquinaria.mx'
 
 // Cache the feed for 6 hours (Merchant Center fetches daily)
 export const revalidate = 21600
@@ -97,7 +97,7 @@ export async function GET() {
   <channel>
     <title>Calcas para Maquinaria</title>
     <link>${BASE_URL}</link>
-    <description>Calcomanías para maquinaria pesada - calcasparamaquinaria.mx</description>
+    <description>Calcomanías para maquinaria pesada - www.calcasparamaquinaria.mx</description>
 ${items.join('\n')}
   </channel>
 </rss>`

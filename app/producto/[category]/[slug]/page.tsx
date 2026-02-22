@@ -32,12 +32,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         openGraph: {
             title: `${product.name} | Calcas para Maquinaria`,
             description,
-            url: `https://calcasparamaquinaria.mx${productUrl(product.id, product.name, categoryName)}`,
-            images: [`https://calcasparamaquinaria.mx/api/product-image/${id}/1024`],
+            url: `https://www.calcasparamaquinaria.mx${productUrl(product.id, product.name, categoryName)}`,
+            images: [`https://www.calcasparamaquinaria.mx/api/product-image/${id}/1024`],
             type: 'article',
         },
         alternates: {
-            canonical: `https://calcasparamaquinaria.mx${productUrl(product.id, product.name, categoryName)}`,
+            canonical: `https://www.calcasparamaquinaria.mx${productUrl(product.id, product.name, categoryName)}`,
         },
     }
 }
@@ -67,7 +67,7 @@ export default async function ProductoPage({ params }: Props) {
         description:
             product.description_sale ||
             `Kit de calcomanias de alta calidad para ${product.name}. +6 anos de duracion a la intemperie.`,
-        image: `https://calcasparamaquinaria.mx/api/product-image/${id}/1024`,
+        image: `https://www.calcasparamaquinaria.mx/api/product-image/${id}/1024`,
         brand: {
             "@type": "Brand",
             name: "Calcas para Maquinaria",
@@ -75,7 +75,7 @@ export default async function ProductoPage({ params }: Props) {
         category: categoryName || "Maquinaria Pesada",
         offers: {
             "@type": "Offer",
-            url: `https://calcasparamaquinaria.mx${canonicalPath}`,
+            url: `https://www.calcasparamaquinaria.mx${canonicalPath}`,
             priceCurrency: "MXN",
             price: product.list_price,
             priceValidUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -114,9 +114,9 @@ export default async function ProductoPage({ params }: Props) {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Inicio", item: "https://calcasparamaquinaria.mx" },
-            { "@type": "ListItem", position: 2, name: "Catálogo", item: "https://calcasparamaquinaria.mx/catalogo" },
-            ...(categoryName ? [{ "@type": "ListItem", position: 3, name: categoryName, item: `https://calcasparamaquinaria.mx/catalogo?categoria=${encodeURIComponent(categoryName)}` }] : []),
+            { "@type": "ListItem", position: 1, name: "Inicio", item: "https://www.calcasparamaquinaria.mx" },
+            { "@type": "ListItem", position: 2, name: "Catálogo", item: "https://www.calcasparamaquinaria.mx/catalogo" },
+            ...(categoryName ? [{ "@type": "ListItem", position: 3, name: categoryName, item: `https://www.calcasparamaquinaria.mx/catalogo?categoria=${encodeURIComponent(categoryName)}` }] : []),
             { "@type": "ListItem", position: categoryName ? 4 : 3, name: product.name },
         ],
     }

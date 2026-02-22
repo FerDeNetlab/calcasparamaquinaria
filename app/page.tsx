@@ -18,7 +18,7 @@ const localBusinessJsonLd = {
   "@type": "LocalBusiness",
   name: "Calcas para Maquinaria",
   image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/RASGADO%20COM%20MX%20w%20v2-pwTMy809i4tSdCEEEOcXvXlI1HdQvM.png",
-  url: "https://calcasparamaquinaria.mx",
+  url: "https://www.calcasparamaquinaria.mx",
   telephone: "+52-33-1528-9366",
   email: "ventas@calcasparamaquinaria.mx",
   address: {

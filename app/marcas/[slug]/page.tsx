@@ -36,12 +36,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: `Calcas para ${brand.name} | Calcas para Maquinaria`,
         description: `Calcomanías de alta calidad para maquinaria ${brand.name}. ${brand.count}+ modelos disponibles con +6 años de duración a la intemperie. Envío a toda la República Mexicana.`,
         alternates: {
-            canonical: `https://calcasparamaquinaria.mx/marcas/${brand.slug}`,
+            canonical: `https://www.calcasparamaquinaria.mx/marcas/${brand.slug}`,
         },
         openGraph: {
             title: `Calcas para ${brand.name} | Calcas para Maquinaria`,
             description: `${brand.count}+ modelos de calcomanías para ${brand.name}. Envío a toda la República.`,
-            url: `https://calcasparamaquinaria.mx/marcas/${brand.slug}`,
+            url: `https://www.calcasparamaquinaria.mx/marcas/${brand.slug}`,
             type: "website",
         },
     }
@@ -80,19 +80,19 @@ export default async function BrandPage({ params, searchParams }: Props) {
                 "@type": "ListItem",
                 position: 1,
                 name: "Inicio",
-                item: "https://calcasparamaquinaria.mx",
+                item: "https://www.calcasparamaquinaria.mx",
             },
             {
                 "@type": "ListItem",
                 position: 2,
                 name: "Marcas",
-                item: "https://calcasparamaquinaria.mx/catalogo",
+                item: "https://www.calcasparamaquinaria.mx/catalogo",
             },
             {
                 "@type": "ListItem",
                 position: 3,
                 name: `Calcas ${brand.name}`,
-                item: `https://calcasparamaquinaria.mx/marcas/${brand.slug}`,
+                item: `https://www.calcasparamaquinaria.mx/marcas/${brand.slug}`,
             },
         ],
     }

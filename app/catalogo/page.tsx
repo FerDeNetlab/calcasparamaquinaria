@@ -42,7 +42,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     title,
     description,
     alternates: {
-      canonical: 'https://calcasparamaquinaria.mx/catalogo',
+      canonical: 'https://www.calcasparamaquinaria.mx/catalogo',
     },
   }
 }
@@ -64,13 +64,13 @@ export default async function CatalogoPage({ searchParams }: Props) {
 
   // Breadcrumb JSON-LD
   const breadcrumbItems = [
-    { '@type': 'ListItem' as const, position: 1, name: 'Inicio', item: 'https://calcasparamaquinaria.mx' },
-    { '@type': 'ListItem' as const, position: 2, name: 'Catálogo', item: 'https://calcasparamaquinaria.mx/catalogo' },
+    { '@type': 'ListItem' as const, position: 1, name: 'Inicio', item: 'https://www.calcasparamaquinaria.mx' },
+    { '@type': 'ListItem' as const, position: 2, name: 'Catálogo', item: 'https://www.calcasparamaquinaria.mx/catalogo' },
   ]
   if (marca) {
-    breadcrumbItems.push({ '@type': 'ListItem', position: 3, name: `Calcas ${marca}`, item: `https://calcasparamaquinaria.mx/catalogo?marca=${encodeURIComponent(marca)}` })
+    breadcrumbItems.push({ '@type': 'ListItem', position: 3, name: `Calcas ${marca}`, item: `https://www.calcasparamaquinaria.mx/catalogo?marca=${encodeURIComponent(marca)}` })
   } else if (categoria) {
-    breadcrumbItems.push({ '@type': 'ListItem', position: 3, name: categoria, item: `https://calcasparamaquinaria.mx/catalogo?categoria=${encodeURIComponent(categoria)}` })
+    breadcrumbItems.push({ '@type': 'ListItem', position: 3, name: categoria, item: `https://www.calcasparamaquinaria.mx/catalogo?categoria=${encodeURIComponent(categoria)}` })
   }
 
   const breadcrumbJsonLd = {

@@ -3,7 +3,7 @@ import { getAllProductsForSitemap, getCategories, getAllProductNames } from '@/l
 import { extractBrands } from '@/lib/brands'
 import { productUrl } from '@/lib/slugs'
 
-const BASE_URL = 'https://calcasparamaquinaria.mx'
+const BASE_URL = 'https://www.calcasparamaquinaria.mx'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Fetch all products, categories, and brands in parallel
