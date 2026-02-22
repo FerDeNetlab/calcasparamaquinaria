@@ -147,6 +147,27 @@ export function Footer() {
         </div>
       </div>
 
+      {/* Google Maps */}
+      <div className="border-t border-border">
+        <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
+          <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-foreground text-center">
+            Encuéntranos
+          </h3>
+          <div className="rounded-xl overflow-hidden border border-border">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3733.0488500784318!2d-103.3446537!3d20.6675915!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8428b1f7bbce33e5%3A0x715f49f5eab6bcca!2sCalcas%20Para%20Maquinaria!5e0!3m2!1ses-419!2smx!4v1771721566722!5m2!1ses-419!2smx"
+              width="100%"
+              height="350"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Ubicación de Calcas para Maquinaria en Google Maps"
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Bottom Bar */}
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 text-xs text-muted-foreground md:flex-row lg:px-8">
