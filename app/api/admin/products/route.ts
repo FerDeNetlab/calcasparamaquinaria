@@ -59,6 +59,7 @@ export async function PUT(request: Request) {
         if (data.list_price !== undefined) allowed.list_price = Number(data.list_price)
         if (data.description_sale !== undefined) allowed.description_sale = data.description_sale
         if (data.default_code !== undefined) allowed.default_code = data.default_code
+        if (data.x_validated_by_direction !== undefined) allowed.x_validated_by_direction = Boolean(data.x_validated_by_direction)
 
         if (Object.keys(allowed).length === 0) {
             return NextResponse.json({ error: 'No hay campos para actualizar' }, { status: 400 })

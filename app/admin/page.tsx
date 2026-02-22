@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import {
     Search, Trash2, Save, X, ChevronLeft, ChevronRight,
-    LogIn, LogOut, Loader2, ArrowUpDown, ArrowUp, ArrowDown
+    LogIn, LogOut, Loader2, ArrowUpDown, ArrowUp, ArrowDown,
+    CheckCircle, XCircle
 } from 'lucide-react'
 
 interface Product {
@@ -14,6 +15,7 @@ interface Product {
     categ_id: [number, string] | false
     default_code: string | false
     description_sale: string | false
+    x_validated_by_direction: boolean
 }
 
 interface ProductsResponse {
@@ -50,6 +52,7 @@ export default function AdminPage() {
     const [editName, setEditName] = useState('')
     const [editPrice, setEditPrice] = useState('')
     const [editDesc, setEditDesc] = useState('')
+    const [editValidated, setEditValidated] = useState(false)
     const [saving, setSaving] = useState(false)
     const [saveSuccess, setSaveSuccess] = useState(false)
 
@@ -147,6 +150,7 @@ export default function AdminPage() {
         setEditName(product.name)
         setEditPrice(product.list_price.toString())
         setEditDesc(product.description_sale || '')
+        setEditValidated(product.x_validated_by_direction || false)
         setSaveSuccess(false)
         setDeleteConfirm(false)
     }
@@ -166,6 +170,7 @@ export default function AdminPage() {
             if (editName !== selectedProduct.name) body.name = editName
             if (parseFloat(editPrice) !== selectedProduct.list_price) body.list_price = parseFloat(editPrice)
             if (editDesc !== (selectedProduct.description_sale || '')) body.description_sale = editDesc
+            if (editValidated !== (selectedProduct.x_validated_by_direction || false)) body.x_validated_by_direction = editValidated
 
             if (Object.keys(body).length <= 1) {
                 setSaving(false)
@@ -187,6 +192,7 @@ export default function AdminPage() {
                             name: editName,
                             list_price: parseFloat(editPrice),
                             description_sale: editDesc || false,
+                            x_validated_by_direction: editValidated,
                         }
                         : p
                 ))
@@ -195,6 +201,7 @@ export default function AdminPage() {
                     name: editName,
                     list_price: parseFloat(editPrice),
                     description_sale: editDesc || false,
+                    x_validated_by_direction: editValidated,
                 })
             }
         } catch {
@@ -345,6 +352,7 @@ export default function AdminPage() {
                                             <span className="flex items-center gap-1">Categoría <SortIcon col="categ_id" /></span>
                                         </th>
                                         <th className="text-left px-4 py-3 text-zinc-400 font-medium w-28">Código</th>
+                                        <th className="text-center px-4 py-3 text-zinc-400 font-medium w-20">✓ Dir.</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -369,6 +377,12 @@ export default function AdminPage() {
                                             <td className="px-4 py-2 text-green-400 font-mono">${product.list_price.toFixed(2)}</td>
                                             <td className="px-4 py-2 text-zinc-400 text-xs">{product.categ_id ? product.categ_id[1] : '—'}</td>
                                             <td className="px-4 py-2 text-zinc-500 font-mono text-xs">{product.default_code || '—'}</td>
+                                            <td className="px-4 py-2 text-center">
+                                                {product.x_validated_by_direction
+                                                    ? <CheckCircle className="w-4 h-4 text-green-400 mx-auto" />
+                                                    : <XCircle className="w-4 h-4 text-zinc-700 mx-auto" />
+                                                }
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -486,6 +500,25 @@ export default function AdminPage() {
                                         placeholder="Descripción del producto..."
                                     />
                                 </div>
+
+                                {/* Validated by Direction */}
+                                <label className="flex items-center gap-3 cursor-pointer group">
+                                    <div className="relative">
+                                        <input
+                                            type="checkbox"
+                                            checked={editValidated}
+                                            onChange={(e) => setEditValidated(e.target.checked)}
+                                            className="sr-only peer"
+                                        />
+                                        <div className="w-10 h-6 bg-zinc-700 rounded-full peer-checked:bg-green-500 transition-colors" />
+                                        <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full peer-checked:translate-x-4 transition-transform" />
+                                    </div>
+                                    <div>
+                                        <span className="text-sm text-white font-medium">Validado por Dirección</span>
+                                        <p className="text-xs text-zinc-500">El precio fue revisado y aprobado</p>
+                                    </div>
+                                    {editValidated && <CheckCircle className="w-5 h-5 text-green-400 ml-auto" />}
+                                </label>
 
                                 {/* Success message */}
                                 {saveSuccess && (

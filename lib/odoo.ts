@@ -97,6 +97,7 @@ const LIST_FIELDS = [
     'categ_id',
     'default_code',
     'description_sale',
+    'x_validated_by_direction',
 ]
 
 // Fields we fetch for product detail (full data, still no binary image)
