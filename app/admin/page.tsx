@@ -24,7 +24,7 @@ interface ProductsResponse {
     totalPages: number
 }
 
-type SortKey = 'name' | 'list_price' | 'categ' | 'id'
+type SortKey = 'name' | 'list_price' | 'categ_id' | 'id'
 type SortDir = 'asc' | 'desc'
 
 export default function AdminPage() {
@@ -70,6 +70,8 @@ export default function AdminPage() {
             const params = new URLSearchParams({
                 page: page.toString(),
                 limit: LIMIT.toString(),
+                sort: sortKey,
+                order: sortDir,
             })
             if (search) params.set('search', search)
 
@@ -92,31 +94,12 @@ export default function AdminPage() {
         } finally {
             setLoading(false)
         }
-    }, [page, search, authHeaders])
+    }, [page, search, sortKey, sortDir, authHeaders])
 
     useEffect(() => {
         if (isAuthenticated) fetchProducts()
     }, [isAuthenticated, fetchProducts])
 
-    // Sorting logic (client-side on current page)
-    const sortedProducts = [...products].sort((a, b) => {
-        const dir = sortDir === 'asc' ? 1 : -1
-        switch (sortKey) {
-            case 'name':
-                return dir * a.name.localeCompare(b.name)
-            case 'list_price':
-                return dir * (a.list_price - b.list_price)
-            case 'categ': {
-                const catA = a.categ_id ? a.categ_id[1] : ''
-                const catB = b.categ_id ? b.categ_id[1] : ''
-                return dir * catA.localeCompare(catB)
-            }
-            case 'id':
-                return dir * (a.id - b.id)
-            default:
-                return 0
-        }
-    })
 
     const toggleSort = (key: SortKey) => {
         if (sortKey === key) {
@@ -125,6 +108,7 @@ export default function AdminPage() {
             setSortKey(key)
             setSortDir('asc')
         }
+        setPage(1) // Reset to first page on sort change
     }
 
     const SortIcon = ({ col }: { col: SortKey }) => {
@@ -356,15 +340,15 @@ export default function AdminPage() {
                                         </th>
                                         <th
                                             className="text-left px-4 py-3 text-zinc-400 font-medium w-36 cursor-pointer hover:text-white select-none"
-                                            onClick={() => toggleSort('categ')}
+                                            onClick={() => toggleSort('categ_id')}
                                         >
-                                            <span className="flex items-center gap-1">Categoría <SortIcon col="categ" /></span>
+                                            <span className="flex items-center gap-1">Categoría <SortIcon col="categ_id" /></span>
                                         </th>
                                         <th className="text-left px-4 py-3 text-zinc-400 font-medium w-28">Código</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {sortedProducts.map((product) => (
+                                    {products.map((product) => (
                                         <tr
                                             key={product.id}
                                             className="border-b border-zinc-800/50 hover:bg-zinc-800/50 transition-colors cursor-pointer"
@@ -418,142 +402,144 @@ export default function AdminPage() {
             </div>
 
             {/* ── Product Detail Modal ── */}
-            {selectedProduct && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    {/* Backdrop */}
-                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={closeModal} />
+            {
+                selectedProduct && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                        {/* Backdrop */}
+                        <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={closeModal} />
 
-                    {/* Modal */}
-                    <div className="relative bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
-                        {/* Close button */}
-                        <button
-                            onClick={closeModal}
-                            className="absolute top-4 right-4 p-2 bg-zinc-800 hover:bg-zinc-700 rounded-full transition-colors z-10"
-                        >
-                            <X className="w-4 h-4" />
-                        </button>
+                        {/* Modal */}
+                        <div className="relative bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
+                            {/* Close button */}
+                            <button
+                                onClick={closeModal}
+                                className="absolute top-4 right-4 p-2 bg-zinc-800 hover:bg-zinc-700 rounded-full transition-colors z-10"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
 
-                        {/* Image */}
-                        <div className="bg-zinc-950 rounded-t-2xl p-6 flex items-center justify-center">
-                            <Image
-                                src={`/api/product-image/${selectedProduct.id}/512`}
-                                alt={selectedProduct.name}
-                                width={400}
-                                height={400}
-                                className="rounded-xl object-contain max-h-72"
-                                unoptimized
-                            />
-                        </div>
-
-                        {/* Content */}
-                        <div className="p-6 space-y-5">
-                            {/* ID & Category (read-only) */}
-                            <div className="flex items-center gap-3 text-sm">
-                                <span className="bg-zinc-800 text-zinc-400 px-2.5 py-1 rounded-full font-mono text-xs">
-                                    ID: {selectedProduct.id}
-                                </span>
-                                {selectedProduct.categ_id && (
-                                    <span className="bg-yellow-500/10 text-yellow-400 px-2.5 py-1 rounded-full text-xs">
-                                        {selectedProduct.categ_id[1]}
-                                    </span>
-                                )}
-                                {selectedProduct.default_code && (
-                                    <span className="bg-zinc-800 text-zinc-500 px-2.5 py-1 rounded-full font-mono text-xs">
-                                        {selectedProduct.default_code}
-                                    </span>
-                                )}
-                            </div>
-
-                            {/* Name */}
-                            <div>
-                                <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Nombre del producto</label>
-                                <input
-                                    value={editName}
-                                    onChange={(e) => setEditName(e.target.value)}
-                                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all"
+                            {/* Image */}
+                            <div className="bg-zinc-950 rounded-t-2xl p-6 flex items-center justify-center">
+                                <Image
+                                    src={`/api/product-image/${selectedProduct.id}/512`}
+                                    alt={selectedProduct.name}
+                                    width={400}
+                                    height={400}
+                                    className="rounded-xl object-contain max-h-72"
+                                    unoptimized
                                 />
                             </div>
 
-                            {/* Price */}
-                            <div>
-                                <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Precio (MXN)</label>
-                                <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500">$</span>
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        min="0"
-                                        value={editPrice}
-                                        onChange={(e) => setEditPrice(e.target.value)}
-                                        className="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-8 pr-4 py-2.5 text-green-400 font-mono focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Description */}
-                            <div>
-                                <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Descripción (opcional)</label>
-                                <textarea
-                                    value={editDesc}
-                                    onChange={(e) => setEditDesc(e.target.value)}
-                                    rows={3}
-                                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all resize-none"
-                                    placeholder="Descripción del producto..."
-                                />
-                            </div>
-
-                            {/* Success message */}
-                            {saveSuccess && (
-                                <div className="bg-green-500/10 border border-green-500/30 rounded-lg px-4 py-2.5 text-green-400 text-sm text-center">
-                                    ✓ Cambios guardados en Odoo
-                                </div>
-                            )}
-
-                            {/* Actions */}
-                            <div className="flex items-center justify-between pt-2">
-                                {/* Delete */}
-                                <div>
-                                    {deleteConfirm ? (
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                onClick={handleDelete}
-                                                disabled={deletingId !== null}
-                                                className="bg-red-600 hover:bg-red-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
-                                            >
-                                                {deletingId ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-                                                Sí, eliminar
-                                            </button>
-                                            <button
-                                                onClick={() => setDeleteConfirm(false)}
-                                                className="text-zinc-400 hover:text-white text-sm px-3 py-2 transition-colors"
-                                            >
-                                                Cancelar
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <button
-                                            onClick={() => setDeleteConfirm(true)}
-                                            className="flex items-center gap-2 text-zinc-500 hover:text-red-400 text-sm transition-colors"
-                                        >
-                                            <Trash2 className="w-4 h-4" /> Eliminar producto
-                                        </button>
+                            {/* Content */}
+                            <div className="p-6 space-y-5">
+                                {/* ID & Category (read-only) */}
+                                <div className="flex items-center gap-3 text-sm">
+                                    <span className="bg-zinc-800 text-zinc-400 px-2.5 py-1 rounded-full font-mono text-xs">
+                                        ID: {selectedProduct.id}
+                                    </span>
+                                    {selectedProduct.categ_id && (
+                                        <span className="bg-yellow-500/10 text-yellow-400 px-2.5 py-1 rounded-full text-xs">
+                                            {selectedProduct.categ_id[1]}
+                                        </span>
+                                    )}
+                                    {selectedProduct.default_code && (
+                                        <span className="bg-zinc-800 text-zinc-500 px-2.5 py-1 rounded-full font-mono text-xs">
+                                            {selectedProduct.default_code}
+                                        </span>
                                     )}
                                 </div>
 
-                                {/* Save */}
-                                <button
-                                    onClick={saveProduct}
-                                    disabled={saving}
-                                    className="bg-yellow-500 hover:bg-yellow-400 text-black font-semibold px-6 py-2.5 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
-                                >
-                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                                    Guardar cambios
-                                </button>
+                                {/* Name */}
+                                <div>
+                                    <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Nombre del producto</label>
+                                    <input
+                                        value={editName}
+                                        onChange={(e) => setEditName(e.target.value)}
+                                        className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all"
+                                    />
+                                </div>
+
+                                {/* Price */}
+                                <div>
+                                    <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Precio (MXN)</label>
+                                    <div className="relative">
+                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500">$</span>
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            value={editPrice}
+                                            onChange={(e) => setEditPrice(e.target.value)}
+                                            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-8 pr-4 py-2.5 text-green-400 font-mono focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Description */}
+                                <div>
+                                    <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Descripción (opcional)</label>
+                                    <textarea
+                                        value={editDesc}
+                                        onChange={(e) => setEditDesc(e.target.value)}
+                                        rows={3}
+                                        className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all resize-none"
+                                        placeholder="Descripción del producto..."
+                                    />
+                                </div>
+
+                                {/* Success message */}
+                                {saveSuccess && (
+                                    <div className="bg-green-500/10 border border-green-500/30 rounded-lg px-4 py-2.5 text-green-400 text-sm text-center">
+                                        ✓ Cambios guardados en Odoo
+                                    </div>
+                                )}
+
+                                {/* Actions */}
+                                <div className="flex items-center justify-between pt-2">
+                                    {/* Delete */}
+                                    <div>
+                                        {deleteConfirm ? (
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={handleDelete}
+                                                    disabled={deletingId !== null}
+                                                    className="bg-red-600 hover:bg-red-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+                                                >
+                                                    {deletingId ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                                                    Sí, eliminar
+                                                </button>
+                                                <button
+                                                    onClick={() => setDeleteConfirm(false)}
+                                                    className="text-zinc-400 hover:text-white text-sm px-3 py-2 transition-colors"
+                                                >
+                                                    Cancelar
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <button
+                                                onClick={() => setDeleteConfirm(true)}
+                                                className="flex items-center gap-2 text-zinc-500 hover:text-red-400 text-sm transition-colors"
+                                            >
+                                                <Trash2 className="w-4 h-4" /> Eliminar producto
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    {/* Save */}
+                                    <button
+                                        onClick={saveProduct}
+                                        disabled={saving}
+                                        className="bg-yellow-500 hover:bg-yellow-400 text-black font-semibold px-6 py-2.5 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+                                    >
+                                        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                                        Guardar cambios
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     )
 }

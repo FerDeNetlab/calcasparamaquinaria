@@ -123,7 +123,8 @@ export async function getProducts(
     limit = 24,
     category?: string,
     search?: string,
-    brand?: string
+    brand?: string,
+    orderBy = 'name asc'
 ): Promise<ProductsResult> {
     const domain: unknown[] = [...PUBLISHED_FILTER]
 
@@ -143,7 +144,7 @@ export async function getProducts(
             'product.template',
             'search_read',
             [domain],
-            { fields: LIST_FIELDS, limit: 5000, order: 'name asc' }
+            { fields: LIST_FIELDS, limit: 5000, order: orderBy }
         )
 
         // Post-filter: only keep products whose extracted brand matches exactly
@@ -172,7 +173,7 @@ export async function getProducts(
             fields: LIST_FIELDS,
             limit,
             offset,
-            order: 'name asc',
+            order: orderBy,
         }),
         execute('product.template', 'search_count', [domain]),
     ])

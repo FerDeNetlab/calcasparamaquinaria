@@ -14,7 +14,7 @@ function checkAuth(request: Request): boolean {
     return authHeader.slice(7) === ADMIN_PASSWORD
 }
 
-/** GET /api/admin/products?page=1&limit=50&search=... */
+/** GET /api/admin/products?page=1&limit=50&search=...&sort=list_price&order=asc */
 export async function GET(request: Request) {
     if (!checkAuth(request)) return unauthorized()
 
@@ -25,8 +25,15 @@ export async function GET(request: Request) {
     const category = searchParams.get('category') || undefined
     const brand = searchParams.get('brand') || undefined
 
+    // Server-side sorting via Odoo
+    const sortField = searchParams.get('sort') || 'name'
+    const sortOrder = searchParams.get('order') || 'asc'
+    const validFields = ['name', 'list_price', 'id', 'categ_id']
+    const field = validFields.includes(sortField) ? sortField : 'name'
+    const orderBy = `${field} ${sortOrder === 'desc' ? 'desc' : 'asc'}`
+
     try {
-        const result = await getProducts(page, limit, category, search, brand)
+        const result = await getProducts(page, limit, category, search, brand, orderBy)
         return NextResponse.json(result)
     } catch (error) {
         console.error('Admin GET error:', error)
