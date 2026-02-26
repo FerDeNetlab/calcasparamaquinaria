@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -45,6 +45,27 @@ function EmptyCart() {
 
 export function CartView() {
   const { items, subtotal, removeFromCart, updateQuantity } = useCart()
+
+  // GTM: begin_checkout
+  useEffect(() => {
+    if (items.length === 0) return
+    window.dataLayer = window.dataLayer || []
+    window.dataLayer.push({ ecommerce: null })
+    window.dataLayer.push({
+      event: 'begin_checkout',
+      ecommerce: {
+        currency: 'MXN',
+        value: subtotal,
+        items: items.map((item) => ({
+          item_id: String(item.id),
+          item_name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+        })),
+      },
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Customer form state
   const [nombre, setNombre] = useState("")
@@ -103,6 +124,25 @@ export function CartView() {
 
   function handleSendWhatsApp() {
     if (!validate()) return
+
+    // GTM: purchase
+    window.dataLayer = window.dataLayer || []
+    window.dataLayer.push({ ecommerce: null })
+    window.dataLayer.push({
+      event: 'purchase',
+      ecommerce: {
+        transaction_id: `WA-${Date.now()}`,
+        currency: 'MXN',
+        value: subtotal,
+        items: items.map((item) => ({
+          item_id: String(item.id),
+          item_name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+        })),
+      },
+    })
+
     const msg = buildWhatsAppMessage()
     const url = `https://wa.me/523315289366?text=${encodeURIComponent(msg)}`
     window.open(url, "_blank", "noopener,noreferrer")

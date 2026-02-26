@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -40,6 +40,26 @@ export function ProductDetail({ product }: { product: OdooProduct }) {
   const imageUrl = `/api/product-image/${product.id}/1024`
   const priceWithIVA = withIVA(product.list_price)
 
+  // GTM: view_item
+  useEffect(() => {
+    window.dataLayer = window.dataLayer || []
+    window.dataLayer.push({ ecommerce: null })
+    window.dataLayer.push({
+      event: 'view_item',
+      ecommerce: {
+        currency: 'MXN',
+        value: priceWithIVA,
+        items: [{
+          item_id: String(product.id),
+          item_name: product.name,
+          item_category: categoryName,
+          price: priceWithIVA,
+          quantity: 1,
+        }],
+      },
+    })
+  }, [product.id, product.name, categoryName, priceWithIVA])
+
   function handleAddToCart() {
     const url = `https://calcasparamaquinaria.mx${productUrl(product.id, product.name, categoryName || undefined)}`
     for (let i = 0; i < quantity; i++) {
@@ -50,6 +70,25 @@ export function ProductDetail({ product }: { product: OdooProduct }) {
         productUrl: url,
       })
     }
+
+    // GTM: add_to_cart
+    window.dataLayer = window.dataLayer || []
+    window.dataLayer.push({ ecommerce: null })
+    window.dataLayer.push({
+      event: 'add_to_cart',
+      ecommerce: {
+        currency: 'MXN',
+        value: priceWithIVA * quantity,
+        items: [{
+          item_id: String(product.id),
+          item_name: product.name,
+          item_category: categoryName,
+          price: priceWithIVA,
+          quantity,
+        }],
+      },
+    })
+
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
   }
