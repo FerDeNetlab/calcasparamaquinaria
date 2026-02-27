@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Phone, Mail, MapPin, Clock, Facebook, Instagram, MessageCircle } from "lucide-react"
+import { TrackedContactLink } from "@/components/tracked-contact-link"
 
 const quickLinks = [
   { label: "Inicio", href: "/" },
@@ -59,7 +60,8 @@ export function Footer() {
                 <Instagram className="h-4 w-4" />
                 <span className="sr-only">Instagram</span>
               </a>
-              <a
+              <TrackedContactLink
+                contactMethod="whatsapp_footer"
                 href="https://wa.me/523315289366"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -67,7 +69,7 @@ export function Footer() {
               >
                 <MessageCircle className="h-4 w-4" />
                 <span className="sr-only">WhatsApp</span>
-              </a>
+              </TrackedContactLink>
             </div>
           </div>
 
@@ -118,16 +120,16 @@ export function Footer() {
               <li className="flex items-start gap-3">
                 <Phone className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
                 <div>
-                  <a href="tel:+523315289366" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  <TrackedContactLink contactMethod="phone_footer" href="tel:+523315289366" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                     +52 (33) 1528 9366
-                  </a>
+                  </TrackedContactLink>
                 </div>
               </li>
               <li className="flex items-start gap-3">
                 <Mail className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
-                <a href="mailto:ventas@calcasparamaquinaria.mx" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <TrackedContactLink contactMethod="email_footer" href="mailto:ventas@calcasparamaquinaria.mx" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   ventas@calcasparamaquinaria.mx
-                </a>
+                </TrackedContactLink>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />

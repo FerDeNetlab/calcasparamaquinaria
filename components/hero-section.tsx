@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { TrackedContactLink } from "@/components/tracked-contact-link"
 import { ArrowRight, Shield, Clock, Package } from "lucide-react"
 
 export function HeroSection() {
@@ -53,7 +54,7 @@ export function HeroSection() {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-                <a href="https://wa.me/523315289366?text=Hola%2C%20quiero%20cotizar%20calcas%20para%20mi%20maquinaria" target="_blank" rel="noopener noreferrer">
+                <TrackedContactLink contactMethod="whatsapp_hero" href="https://wa.me/523315289366?text=Hola%2C%20quiero%20cotizar%20calcas%20para%20mi%20maquinaria" target="_blank" rel="noopener noreferrer">
                   <Button
                     size="lg"
                     variant="outline"
@@ -61,7 +62,7 @@ export function HeroSection() {
                   >
                     Cotizar por WhatsApp
                   </Button>
-                </a>
+                </TrackedContactLink>
               </div>
 
               {/* Stats */}

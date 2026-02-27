@@ -67,7 +67,7 @@ export function Navbar() {
                 <span className="sr-only">Carrito</span>
               </Button>
             </Link>
-            <a href="https://wa.me/523315289366" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/523315289366" target="_blank" rel="noopener noreferrer" onClick={() => { window.dataLayer = window.dataLayer || []; window.dataLayer.push({ event: 'contact', contact_method: 'whatsapp_navbar' }) }}>
               <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
                 <Phone className="mr-2 h-4 w-4" />
                 Cotizar
@@ -115,7 +115,7 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <a href="https://wa.me/523315289366" target="_blank" rel="noopener noreferrer" className="mt-2">
+            <a href="https://wa.me/523315289366" target="_blank" rel="noopener noreferrer" className="mt-2" onClick={() => { window.dataLayer = window.dataLayer || []; window.dataLayer.push({ event: 'contact', contact_method: 'whatsapp_navbar_mobile' }) }}>
               <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
                 <Phone className="mr-2 h-4 w-4" />
                 Cotizar por WhatsApp

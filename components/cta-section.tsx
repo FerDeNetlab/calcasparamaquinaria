@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import { TrackedContactLink } from "@/components/tracked-contact-link"
 import { MessageCircle, ArrowRight } from "lucide-react"
 
 export function CtaSection() {
@@ -38,7 +39,7 @@ export function CtaSection() {
               ⭐ Más de 500 empresas ya confían en nuestras calcas
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <a href="https://wa.me/523315289366?text=Hola%2C%20necesito%20cotizar%20calcas%20personalizadas%20para%20mi%20maquinaria" target="_blank" rel="noopener noreferrer">
+              <TrackedContactLink contactMethod="whatsapp_cta" href="https://wa.me/523315289366?text=Hola%2C%20necesito%20cotizar%20calcas%20personalizadas%20para%20mi%20maquinaria" target="_blank" rel="noopener noreferrer">
                 <Button
                   size="lg"
                   className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold uppercase tracking-wider"
@@ -46,8 +47,8 @@ export function CtaSection() {
                   <MessageCircle className="mr-2 h-5 w-5" />
                   Escribenos por WhatsApp
                 </Button>
-              </a>
-              <a href="tel:+523315289366">
+              </TrackedContactLink>
+              <TrackedContactLink contactMethod="phone_cta" href="tel:+523315289366">
                 <Button
                   size="lg"
                   variant="outline"
@@ -56,7 +57,7 @@ export function CtaSection() {
                   Llamar ahora
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-              </a>
+              </TrackedContactLink>
             </div>
           </div>
 

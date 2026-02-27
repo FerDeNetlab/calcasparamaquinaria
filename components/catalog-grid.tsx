@@ -442,7 +442,7 @@ export function CatalogGrid({
             No encontramos resultados con esos filtros. Intenta ajustando tu busqueda o contactanos
             para fabricar la calca que necesitas a medida.
           </p>
-          <a href="https://wa.me/523315289366" target="_blank" rel="noopener noreferrer">
+          <a href="https://wa.me/523315289366" target="_blank" rel="noopener noreferrer" onClick={() => { window.dataLayer = window.dataLayer || []; window.dataLayer.push({ event: 'contact', contact_method: 'whatsapp_catalog' }) }}>
             <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
               Solicitar calca personalizada
             </Button>
