@@ -103,6 +103,25 @@ export function ProductDetail({ product }: { product: OdooProduct }) {
         productUrl: url,
       })
     }
+
+    // GTM: add_to_cart (buy now also adds to cart)
+    window.dataLayer = window.dataLayer || []
+    window.dataLayer.push({ ecommerce: null })
+    window.dataLayer.push({
+      event: 'add_to_cart',
+      ecommerce: {
+        currency: 'MXN',
+        value: priceWithIVA * quantity,
+        items: [{
+          item_id: String(product.id),
+          item_name: product.name,
+          item_category: categoryName,
+          price: priceWithIVA,
+          quantity,
+        }],
+      },
+    })
+
     router.push("/carrito")
   }
 

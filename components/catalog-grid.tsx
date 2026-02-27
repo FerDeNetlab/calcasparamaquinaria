@@ -92,13 +92,33 @@ export function CatalogGrid({
   }
 
   function handleAddToCart(product: OdooProduct) {
+    const priceWithIVA = withIVA(product.list_price)
     const url = `https://calcasparamaquinaria.mx${productUrl(product.id, product.name, product.categ_id ? product.categ_id[1] : undefined)}`
     addToCart({
       id: product.id,
       name: product.name,
-      price: withIVA(product.list_price),
+      price: priceWithIVA,
       productUrl: url,
     })
+
+    // GTM: add_to_cart
+    window.dataLayer = window.dataLayer || []
+    window.dataLayer.push({ ecommerce: null })
+    window.dataLayer.push({
+      event: 'add_to_cart',
+      ecommerce: {
+        currency: 'MXN',
+        value: priceWithIVA,
+        items: [{
+          item_id: String(product.id),
+          item_name: product.name,
+          item_category: product.categ_id ? product.categ_id[1] : '',
+          price: priceWithIVA,
+          quantity: 1,
+        }],
+      },
+    })
+
     // Show brief "added" feedback
     setAddedIds((prev) => new Set(prev).add(product.id))
     setTimeout(() => {

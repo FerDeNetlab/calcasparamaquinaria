@@ -1,4 +1,5 @@
 import { Truck, Phone, Package } from "lucide-react"
+import { TrackedContactLink } from "@/components/tracked-contact-link"
 
 export function TrustBanner() {
     return (
@@ -10,13 +11,14 @@ export function TrustBanner() {
                     <span className="sm:hidden">Envío nacional</span>
                 </span>
                 <span className="hidden sm:inline text-primary-foreground/40">|</span>
-                <a
+                <TrackedContactLink
+                    contactMethod="phone_banner"
                     href="tel:+523315289366"
                     className="flex items-center gap-1.5 transition-opacity hover:opacity-80"
                 >
                     <Phone className="h-3.5 w-3.5" />
                     (33) 1528-9366
-                </a>
+                </TrackedContactLink>
                 <span className="hidden sm:inline text-primary-foreground/40">|</span>
                 <span className="hidden sm:flex items-center gap-1.5">
                     <Package className="h-3.5 w-3.5" />
