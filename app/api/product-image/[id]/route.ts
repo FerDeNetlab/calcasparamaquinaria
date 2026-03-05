@@ -40,8 +40,8 @@ export async function GET(
             headers: {
                 'Content-Type': contentType,
                 'Content-Length': buffer.length.toString(),
-                // Cache for 24 hours on CDN, 1 hour in browser
-                'Cache-Control': 'public, s-maxage=86400, max-age=3600, stale-while-revalidate=86400',
+                // Cache for 7 days on CDN, 1 hour in browser
+                'Cache-Control': 'public, s-maxage=604800, max-age=3600, stale-while-revalidate=604800',
             },
         })
     } catch (error) {

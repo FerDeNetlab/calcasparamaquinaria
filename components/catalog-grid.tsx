@@ -276,6 +276,7 @@ export function CatalogGrid({
                     src={`/api/product-image/${product.id}/256`}
                     alt={product.name}
                     fill
+                    unoptimized
                     className="object-contain p-6 transition-transform duration-500 group-hover:scale-110"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
@@ -349,6 +350,7 @@ export function CatalogGrid({
                     src={`/api/product-image/${product.id}/128`}
                     alt={product.name}
                     fill
+                    unoptimized
                     className="object-contain p-2"
                     sizes="80px"
                   />

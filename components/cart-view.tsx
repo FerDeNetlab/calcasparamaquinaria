@@ -204,6 +204,7 @@ export function CartView() {
                       src={`/api/product-image/${item.id}/128`}
                       alt={item.name}
                       fill
+                      unoptimized
                       className="object-contain p-2"
                     />
                   </div>

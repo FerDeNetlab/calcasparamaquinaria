@@ -160,6 +160,7 @@ export function ProductDetail({ product }: { product: OdooProduct }) {
                 src={imageUrl}
                 alt={product.name}
                 fill
+                unoptimized
                 className="object-contain p-8"
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
