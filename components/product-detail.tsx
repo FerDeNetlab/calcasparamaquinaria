@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { useCart } from "@/contexts/cart-context"
 import { withIVA, formatMXN } from "@/lib/utils"
 import { productUrl } from "@/lib/slugs"
+import { productImageUrl } from "@/lib/image-url"
 import {
   ShoppingCart,
   Zap,
@@ -37,7 +38,7 @@ export function ProductDetail({ product }: { product: OdooProduct }) {
   const { addToCart } = useCart()
 
   const categoryName = product.categ_id ? product.categ_id[1] : ""
-  const imageUrl = `/api/product-image/${product.id}/1024`
+  const imageUrl = productImageUrl(product.id, 1024, product.write_date)
   const priceWithIVA = withIVA(product.list_price)
 
   // GTM: view_item

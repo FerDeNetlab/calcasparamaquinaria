@@ -22,6 +22,7 @@ import {
 } from "lucide-react"
 import type { OdooProduct, OdooCategory } from "@/lib/odoo"
 import { productUrl } from "@/lib/slugs"
+import { productImageUrl } from "@/lib/image-url"
 import type { BrandInfo } from "@/lib/brands"
 
 interface CatalogGridProps {
@@ -273,7 +274,7 @@ export function CatalogGrid({
               >
                 <div className="relative aspect-square overflow-hidden bg-white p-4">
                   <Image
-                    src={`/api/product-image/${product.id}/256`}
+                    src={productImageUrl(product.id, 256, product.write_date)}
                     alt={product.name}
                     fill
                     unoptimized
@@ -347,7 +348,7 @@ export function CatalogGrid({
               >
                 <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
                   <Image
-                    src={`/api/product-image/${product.id}/128`}
+                    src={productImageUrl(product.id, 128, product.write_date)}
                     alt={product.name}
                     fill
                     unoptimized

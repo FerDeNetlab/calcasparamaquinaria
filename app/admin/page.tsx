@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
+import { productImageUrl } from '@/lib/image-url'
 import {
     Search, Trash2, Save, X, ChevronLeft, ChevronRight,
     LogIn, LogOut, Loader2, ArrowUpDown, ArrowUp, ArrowDown,
@@ -16,6 +17,7 @@ interface Product {
     default_code: string | false
     description_sale: string | false
     x_validated_by_direction: boolean
+    write_date: string
 }
 
 interface ProductsResponse {
@@ -364,7 +366,7 @@ export default function AdminPage() {
                                         >
                                             <td className="px-4 py-2">
                                                 <Image
-                                                    src={`/api/product-image/${product.id}/128`}
+                                                    src={productImageUrl(product.id, 128, product.write_date)}
                                                     alt=""
                                                     width={40}
                                                     height={40}
@@ -435,7 +437,7 @@ export default function AdminPage() {
                             {/* Image */}
                             <div className="bg-zinc-950 rounded-t-2xl p-6 flex items-center justify-center">
                                 <Image
-                                    src={`/api/product-image/${selectedProduct.id}/512`}
+                                    src={productImageUrl(selectedProduct.id, 512, selectedProduct.write_date)}
                                     alt={selectedProduct.name}
                                     width={400}
                                     height={400}

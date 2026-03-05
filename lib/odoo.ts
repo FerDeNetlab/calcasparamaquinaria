@@ -11,6 +11,7 @@ export interface OdooProduct {
     default_code: string | false
     description_sale: string | false
     x_available_ecommerce: boolean
+    write_date: string
 }
 
 export interface OdooCategory {
@@ -98,6 +99,7 @@ const LIST_FIELDS = [
     'default_code',
     'description_sale',
     'x_validated_by_direction',
+    'write_date',
 ]
 
 // Fields we fetch for product detail (full data, still no binary image)
@@ -109,6 +111,7 @@ const DETAIL_FIELDS = [
     'default_code',
     'description_sale',
     'x_available_ecommerce',
+    'write_date',
 ]
 
 // ─── Public API ─────────────────────────────────────────────────────────────

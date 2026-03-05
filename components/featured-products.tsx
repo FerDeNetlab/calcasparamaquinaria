@@ -6,6 +6,7 @@ import { getFeaturedProducts } from "@/lib/odoo"
 import type { OdooProduct } from "@/lib/odoo"
 import { productUrl } from "@/lib/slugs"
 import { withIVA, formatMXN } from "@/lib/utils"
+import { productImageUrl } from "@/lib/image-url"
 
 function ProductCard({ product }: { product: OdooProduct }) {
   const priceWithIVA = withIVA(product.list_price)
@@ -14,7 +15,7 @@ function ProductCard({ product }: { product: OdooProduct }) {
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-white p-4">
         <Image
-          src={`/api/product-image/${product.id}/256`}
+          src={productImageUrl(product.id, 256, product.write_date)}
           alt={product.name}
           fill
           unoptimized
