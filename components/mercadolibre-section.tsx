@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { ShieldCheck, CreditCard, Truck, Star, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -73,8 +74,14 @@ export function MercadoLibreSection() {
                 <div className="relative rounded-2xl border border-[#FFE600]/20 bg-gradient-to-r from-[#FFE600]/5 to-[#FFE600]/10 p-8 sm:p-10">
                     <div className="flex flex-col items-center gap-6 text-center lg:flex-row lg:text-left">
                         {/* MeLi logo / branding */}
-                        <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-2xl bg-[#FFE600]">
-                            <span className="text-3xl font-black text-black">ML</span>
+                        <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-2xl overflow-hidden bg-[#FFE600]">
+                            <Image
+                                src="/mercadolibre-icon.jpg"
+                                alt="MercadoLibre"
+                                width={80}
+                                height={80}
+                                className="h-full w-full object-cover"
+                            />
                         </div>
 
                         <div className="flex-1">
