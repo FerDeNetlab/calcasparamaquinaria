@@ -11,7 +11,7 @@ export function WhatsAppButton() {
 
   return (
     <a
-      href="https://wa.me/523315289366?text=Hola%2C%20me%20interesan%20sus%20calcomanias"
+      href="https://wa.me/523315289366?text=Hola%2C%20me%20interesan%20sus%20calcomanías"
       target="_blank"
       rel="noopener noreferrer"
       onClick={handleClick}

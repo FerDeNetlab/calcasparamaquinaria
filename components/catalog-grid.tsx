@@ -462,7 +462,7 @@ export function CatalogGrid({
           </div>
           <h3 className="text-lg font-bold text-foreground">No se encontraron productos</h3>
           <p className="max-w-md text-sm text-muted-foreground">
-            No encontramos resultados con esos filtros. Intenta ajustando tu busqueda o contactanos
+            No encontramos resultados con esos filtros. Intenta ajustando tu búsqueda o contactaños
             para fabricar la calca que necesitas a medida.
           </p>
           <a href="https://wa.me/523315289366" target="_blank" rel="noopener noreferrer" onClick={() => { window.dataLayer = window.dataLayer || []; window.dataLayer.push({ event: 'contact', contact_method: 'whatsapp_catalog' }) }}>

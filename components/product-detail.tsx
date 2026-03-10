@@ -25,7 +25,7 @@ const features = [
   "Impresion digital de alta definicion",
   "Laminado UV para proteccion solar",
   "Resistente al agua y quimicos",
-  "+6 anos de duracion a la intemperie",
+  "+6 años de duración a la intemperie",
   "Colores exactos al original",
   "Facil instalacion",
   "Kit completo para el modelo",
@@ -134,7 +134,7 @@ export function ProductDetail({ product }: { product: OdooProduct }) {
           <nav className="flex items-center gap-2 text-xs text-muted-foreground">
             <Link href="/" className="hover:text-primary transition-colors">Inicio</Link>
             <ChevronRight className="h-3 w-3" />
-            <Link href="/catalogo" className="hover:text-primary transition-colors">Catalogo</Link>
+            <Link href="/catalogo" className="hover:text-primary transition-colors">Catálogo</Link>
             {categoryName && (
               <>
                 <ChevronRight className="h-3 w-3" />
@@ -201,9 +201,9 @@ export function ProductDetail({ product }: { product: OdooProduct }) {
 
             {!product.description_sale && (
               <p className="text-muted-foreground leading-relaxed">
-                Kit completo de calcomanias de alta calidad para maquinaria pesada. Fabricadas en
+                Kit completo de calcomanías de alta calidad para maquinaria pesada. Fabricadas en
                 vinil premium con impresion de alta definicion y laminado de proteccion UV.
-                Mas de 6 anos de duracion a la intemperie.
+                Más de 6 años de duración a la intemperie.
               </p>
             )}
 
@@ -272,20 +272,20 @@ export function ProductDetail({ product }: { product: OdooProduct }) {
                 <Truck className="h-5 w-5 flex-shrink-0 text-primary" />
                 <div>
                   <p className="text-xs font-bold text-foreground">Envio nacional</p>
-                  <p className="text-xs text-muted-foreground">A toda la Republica</p>
+                  <p className="text-xs text-muted-foreground">A toda la República</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 rounded-lg border border-border bg-card p-3">
                 <Shield className="h-5 w-5 flex-shrink-0 text-primary" />
                 <div>
-                  <p className="text-xs font-bold text-foreground">Garantia</p>
+                  <p className="text-xs font-bold text-foreground">Garantía</p>
                   <p className="text-xs text-muted-foreground">Calidad premium</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 rounded-lg border border-border bg-card p-3">
                 <Clock className="h-5 w-5 flex-shrink-0 text-primary" />
                 <div>
-                  <p className="text-xs font-bold text-foreground">+6 anos</p>
+                  <p className="text-xs font-bold text-foreground">+6 años</p>
                   <p className="text-xs text-muted-foreground">De duracion</p>
                 </div>
               </div>

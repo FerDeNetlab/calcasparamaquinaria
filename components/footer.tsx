@@ -5,7 +5,7 @@ import { TrackedContactLink } from "@/components/tracked-contact-link"
 
 const quickLinks = [
   { label: "Inicio", href: "/" },
-  { label: "Catalogo", href: "/catalogo" },
+  { label: "Catálogo", href: "/catalogo" },
   { label: "Marcas", href: "/#marcas" },
   { label: "Nosotros", href: "/#nosotros" },
   { label: "Contacto", href: "/#contacto" },
@@ -38,8 +38,8 @@ export function Footer() {
               className="h-10 w-auto object-contain"
             />
             <p className="text-sm leading-relaxed text-muted-foreground">
-              Calcomanias de alta calidad para maquinaria pesada. Mas de 7,000 modelos
-              disponibles con +6 anos de duracion a la intemperie.
+              Calcomanías de alta calidad para maquinaria pesada. Más de 7,000 modelos
+              disponibles con +6 años de duración a la intemperie.
             </p>
             <div className="flex items-center gap-3">
               <a
@@ -76,7 +76,7 @@ export function Footer() {
           {/* Quick Links */}
           <div>
             <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-foreground">
-              Navegacion
+              Navegación
             </h3>
             <ul className="flex flex-col gap-3">
               {quickLinks.map((link) => (
@@ -153,7 +153,7 @@ export function Footer() {
       <div className="border-t border-border">
         <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
           <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-foreground text-center">
-            Encuéntranos
+            Encuéntraños
           </h3>
           <div className="rounded-xl overflow-hidden border border-border">
             <iframe

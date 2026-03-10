@@ -52,7 +52,7 @@ export function BrandsSection() {
               <div className="relative w-full h-full">
                 <Image
                   src={brand.src}
-                  alt={`Calcomanias para ${brand.name}`}
+                  alt={`Calcomanías para ${brand.name}`}
                   fill
                   sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 14vw"
                   className="object-contain p-1 opacity-50 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0"

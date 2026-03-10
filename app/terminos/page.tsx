@@ -26,7 +26,7 @@ export default function TerminosYCondiciones() {
 
                         <h2>2. Precios</h2>
                         <ul className="list-disc pl-6 space-y-1">
-                            <li>Todos los precios mostrados en el Sitio están expresados en <strong>Pesos Mexicanos (MXN)</strong> e <strong>incluyen IVA</strong>.</li>
+                            <li>Todos los precios mostrados en el Sitio están expresados en <strong>Pesos Mexicaños (MXN)</strong> e <strong>incluyen IVA</strong>.</li>
                             <li>Publim se reserva el derecho de modificar los precios sin previo aviso.</li>
                             <li>El precio aplicable será el vigente al momento de confirmar el pedido.</li>
                         </ul>
@@ -80,7 +80,7 @@ export default function TerminosYCondiciones() {
                         </ul>
 
                         <h2>9. Ley aplicable y jurisdicción</h2>
-                        <p>Los presentes Términos y Condiciones se rigen por las leyes vigentes en los Estados Unidos Mexicanos. Para cualquier controversia derivada del uso del Sitio o de la compra de productos, las partes se someten a la jurisdicción de los tribunales competentes de la ciudad de Guadalajara, Jalisco, México, renunciando a cualquier otro fuero que pudiera corresponderles.</p>
+                        <p>Los presentes Términos y Condiciones se rigen por las leyes vigentes en los Estados Unidos Mexicaños. Para cualquier controversia derivada del uso del Sitio o de la compra de productos, las partes se someten a la jurisdicción de los tribunales competentes de la ciudad de Guadalajara, Jalisco, México, renunciando a cualquier otro fuero que pudiera corresponderles.</p>
 
                         <h2>10. Modificaciones</h2>
                         <p>Publim se reserva el derecho de modificar los presentes Términos y Condiciones en cualquier momento. Los cambios entrarán en vigor a partir de su publicación en esta página: <a href="/terminos">www.calcasparamaquinaria.mx/terminos</a>.</p>

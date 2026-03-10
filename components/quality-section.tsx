@@ -13,8 +13,8 @@ const features = [
   },
   {
     icon: Clock,
-    title: "+6 anos de duracion",
-    description: "Garantia de mas de 6 anos de duracion a la intemperie en condiciones normales de uso.",
+    title: "+6 años de duración",
+    description: "Garantía de más de 6 años de duración a la intemperie en condiciones normales de uso.",
   },
   {
     icon: Shield,
@@ -24,11 +24,11 @@ const features = [
   {
     icon: Truck,
     title: "Envio nacional",
-    description: "Enviamos a toda la Republica Mexicana con paqueterias confiables y rastreo.",
+    description: "Enviamos a toda la República Mexicana con paqueterias confiables y rastreo.",
   },
   {
     icon: Award,
-    title: "Garantia total",
+    title: "Garantía total",
     description: "Si su calca presenta defectos de fabrica, la reponemos sin costo adicional.",
   },
 ]
@@ -50,7 +50,7 @@ export function QualitySection() {
             Por que elegirnos
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground leading-relaxed">
-            Nuestras calcomanias estan fabricadas con los mas altos estandares de calidad
+            Nuestras calcomanías estan fabricadas con los mas altos estandares de calidad
             para soportar las condiciones mas exigentes de trabajo.
           </p>
         </div>

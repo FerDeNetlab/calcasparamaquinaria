@@ -10,7 +10,7 @@ import { TrustBanner } from "@/components/trust-banner"
 
 const navLinks = [
   { label: "Inicio", href: "/" },
-  { label: "Catalogo", href: "/catalogo" },
+  { label: "Catálogo", href: "/catalogo" },
   { label: "Marcas", href: "/#marcas" },
   { label: "Nosotros", href: "/#nosotros" },
   { label: "Contacto", href: "/#contacto" },

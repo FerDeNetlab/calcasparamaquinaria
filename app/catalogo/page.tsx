@@ -47,7 +47,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   }
 }
 
-export default async function CatalogoPage({ searchParams }: Props) {
+export default async function CatálogoPage({ searchParams }: Props) {
   const params = await searchParams
   const page = Number(params.page) || 1
   const categoria = params.categoria || undefined

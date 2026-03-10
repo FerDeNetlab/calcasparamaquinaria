@@ -68,7 +68,7 @@ export async function FeaturedProducts() {
             <div className="mb-4 flex items-center gap-3">
               <div className="h-px w-12 bg-primary" />
               <span className="text-sm font-semibold uppercase tracking-widest text-primary">
-                Catalogo
+                Catálogo
               </span>
             </div>
             <h2 className="text-balance text-3xl font-black uppercase tracking-tight text-foreground md:text-4xl lg:text-5xl">

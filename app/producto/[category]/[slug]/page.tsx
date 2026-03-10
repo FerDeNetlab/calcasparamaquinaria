@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const categoryName = product.categ_id ? product.categ_id[1] : "maquinaria pesada"
     const description =
         product.description_sale ||
-        `Kit de calcomanias de alta calidad para ${product.name}. Tipo: ${categoryName}. +6 anos de duracion a la intemperie. Envio a toda la Republica.`
+        `Kit de calcomanías de alta calidad para ${product.name}. Tipo: ${categoryName}. +6 años de duración a la intemperie. Envío a toda la República.`
 
     return {
         title: product.name,
@@ -66,7 +66,7 @@ export default async function ProductoPage({ params }: Props) {
         name: product.name,
         description:
             product.description_sale ||
-            `Kit de calcomanias de alta calidad para ${product.name}. +6 anos de duracion a la intemperie.`,
+            `Kit de calcomanías de alta calidad para ${product.name}. +6 años de duración a la intemperie.`,
         image: `https://odoo.calcasparamaquinaria.mx/web/image/product.template/${id}/image_1024`,
         brand: {
             "@type": "Brand",

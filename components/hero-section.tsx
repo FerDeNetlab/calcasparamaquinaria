@@ -39,9 +39,9 @@ export function HeroSection() {
               </h1>
 
               <p className="max-w-md lg:max-w-lg text-base sm:text-lg leading-relaxed text-muted-foreground">
-                Mas de <strong className="text-foreground">7,000 modelos</strong> de calcomanias
+                Más de <strong className="text-foreground">7,000 modelos</strong> de calcomanías
                 de alta calidad para maquinaria pesada con{" "}
-                <strong className="text-foreground">+6 anos de duracion</strong> a la intemperie.
+                <strong className="text-foreground">+6 años de duración</strong> a la intemperie.
               </p>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
@@ -102,7 +102,7 @@ export function HeroSection() {
           <div className="relative flex-shrink-0 lg:w-[55%] self-end pointer-events-none -mb-1" style={{ marginRight: 'calc(-1 * (100vw - 100%) / 2)' }}>
             <Image
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/320CAT_2-wyWidLOuXCLdHtdoeZv3paV4g6rROr.png"
-              alt="Excavadora CAT 320 con calcomanias de alta calidad"
+              alt="Excavadora CAT 320 con calcomanías de alta calidad"
               width={900}
               height={650}
               className="w-full h-auto object-contain"
