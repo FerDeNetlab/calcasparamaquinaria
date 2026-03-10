@@ -108,6 +108,7 @@ export default function Home() {
 
       <Navbar />
       <HeroSection />
+      <MercadoLibreSection />
       <BrandsSection />
       <Suspense fallback={
         <section className="bg-background py-20 lg:py-28">
@@ -119,7 +120,6 @@ export default function Home() {
         <FeaturedProducts />
       </Suspense>
       <TestimonialsSection />
-      <MercadoLibreSection />
       <CtaSection />
       <FaqSection />
       <QualitySection />
