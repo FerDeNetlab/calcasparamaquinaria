@@ -8,6 +8,7 @@ import { TestimonialsSection } from "@/components/testimonials-section"
 import { CtaSection } from "@/components/cta-section"
 import { FaqSection } from "@/components/faq-section"
 import { QualitySection } from "@/components/quality-section"
+import { MercadoLibreSection } from "@/components/mercadolibre-section"
 import { Footer } from "@/components/footer"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 
@@ -118,6 +119,7 @@ export default function Home() {
         <FeaturedProducts />
       </Suspense>
       <TestimonialsSection />
+      <MercadoLibreSection />
       <CtaSection />
       <FaqSection />
       <QualitySection />

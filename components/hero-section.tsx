@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { TrackedContactLink } from "@/components/tracked-contact-link"
-import { ArrowRight, Shield, Clock, Package } from "lucide-react"
+import { ArrowRight, Shield, Clock, Package, ExternalLink } from "lucide-react"
 
 export function HeroSection() {
   return (
@@ -64,6 +64,16 @@ export function HeroSection() {
                   </Button>
                 </TrackedContactLink>
               </div>
+              <Link
+                href="https://www.mercadolibre.com.mx/pagina/calcasparamaquinariamx"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-[#FFE600] hover:text-[#FFE600]/80 transition-colors group"
+              >
+                <span className="flex h-6 w-6 items-center justify-center rounded bg-[#FFE600] text-[10px] font-black text-black">ML</span>
+                Compra también en MercadoLibre
+                <ExternalLink className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              </Link>
 
               {/* Stats */}
               <div className="mt-2 sm:mt-4 grid grid-cols-3 gap-4 sm:flex sm:flex-wrap sm:gap-8">
