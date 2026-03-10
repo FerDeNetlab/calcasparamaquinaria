@@ -70,7 +70,7 @@ export function HeroSection() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm font-semibold text-[#FFE600] hover:text-[#FFE600]/80 transition-colors group"
               >
-                <Image src="/mercadolibre-icon.jpg" alt="MercadoLibre" width={24} height={24} className="h-6 w-6 rounded object-cover" />
+                <Image src="/mercadolibre-icon.jpg" alt="MercadoLibre" width={24} height={24} className="h-6 w-6 rounded object-cover" unoptimized />
                 Compra también en MercadoLibre
                 <ExternalLink className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
               </Link>
