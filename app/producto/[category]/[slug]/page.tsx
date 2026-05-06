@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             title: `${product.name} | Calcas para Maquinaria`,
             description,
             url: `https://www.calcasparamaquinaria.mx${productUrl(product.id, product.name, categoryName)}`,
-            images: [`https://odoo.calcasparamaquinaria.mx/web/image/product.template/${id}/image_1024`],
+            images: [`https://www.calcasparamaquinaria.mx/api/product-image/${id}?size=1024`],
             type: 'article',
         },
         alternates: {
@@ -67,7 +67,7 @@ export default async function ProductoPage({ params }: Props) {
         description:
             product.description_sale ||
             `Kit de calcomanías de alta calidad para ${product.name}. +6 años de duración a la intemperie.`,
-        image: `https://odoo.calcasparamaquinaria.mx/web/image/product.template/${id}/image_1024`,
+        image: `https://www.calcasparamaquinaria.mx/api/product-image/${id}?size=1024`,
         brand: {
             "@type": "Brand",
             name: "Calcas para Maquinaria",

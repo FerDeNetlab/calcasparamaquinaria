@@ -58,7 +58,7 @@ export async function GET() {
             const brand = extractBrand(product.name) || 'Genérico'
             const categoryName = product.categ_id ? product.categ_id[1] : 'Maquinaria Pesada'
             const url = `${BASE_URL}${productUrl(product.id, product.name, categoryName)}`
-            const imageUrl = `https://odoo.calcasparamaquinaria.mx/web/image/product.template/${product.id}/image_512`
+            const imageUrl = `${BASE_URL}/api/product-image/${product.id}?size=512`
             const price = `${product.list_price.toFixed(2)} MXN`
 
             // Title Case + trim trailing whitespace
