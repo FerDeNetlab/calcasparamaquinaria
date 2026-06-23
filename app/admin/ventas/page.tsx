@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 import {
-    Loader2, TrendingUp, Users, ShoppingCart,
-    BarChart3, Target, ChevronRight, RefreshCw,
-    CheckCircle2, Clock, DollarSign
+    Loader2, Users, ShoppingCart,
+    Target, ChevronRight, RefreshCw,
+    CheckCircle2, Clock, DollarSign, ChevronDown
 } from 'lucide-react'
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -66,25 +66,22 @@ interface SaleOrder {
     invoice_status: string
 }
 
-// ── Helpers ────────────────────────────────────────────────────────────────
+// ── Constants ──────────────────────────────────────────────────────────────
 
-function fmt(n: number) {
-    return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 }).format(n)
-}
-
-function fmtDate(s: string) {
-    return new Date(s).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' })
-}
-
-function getLast6Months(): string[] {
-    const months: string[] = []
-    const now = new Date()
-    for (let i = 5; i >= 0; i--) {
-        const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
-        months.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`)
-    }
-    return months
-}
+const MONTHS = [
+    { value: '01', label: 'Enero' },
+    { value: '02', label: 'Febrero' },
+    { value: '03', label: 'Marzo' },
+    { value: '04', label: 'Abril' },
+    { value: '05', label: 'Mayo' },
+    { value: '06', label: 'Junio' },
+    { value: '07', label: 'Julio' },
+    { value: '08', label: 'Agosto' },
+    { value: '09', label: 'Septiembre' },
+    { value: '10', label: 'Octubre' },
+    { value: '11', label: 'Noviembre' },
+    { value: '12', label: 'Diciembre' },
+]
 
 const STAGE_COLORS: Record<string, string> = {
     'PERFILANDO': 'bg-zinc-700 text-zinc-300',
@@ -115,10 +112,44 @@ const STATE_BADGE: Record<string, { label: string; cls: string }> = {
     cancel: { label: 'Cancelada',  cls: 'bg-red-500/20 text-red-400' },
 }
 
+// ── Helpers ────────────────────────────────────────────────────────────────
+
+function fmt(n: number) {
+    return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 }).format(n)
+}
+
+function fmtDate(s: string) {
+    return new Date(s).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
+// Returns all months in a year, or the single selected month for bar chart
+function getChartMonths(year: string, month: string | null): string[] {
+    if (month) return [`${year}-${month}`]
+    return Array.from({ length: 12 }, (_, i) =>
+        `${year}-${String(i + 1).padStart(2, '0')}`
+    )
+}
+
+// Available years based on known data range
+function getYears(): string[] {
+    const current = new Date().getFullYear()
+    const years: string[] = []
+    for (let y = current; y >= 2024; y--) years.push(String(y))
+    return years
+}
+
 // ── Page ───────────────────────────────────────────────────────────────────
 
 export default function VentasPage() {
+    const now = new Date()
+    const currentYear = String(now.getFullYear())
+
     const [tab, setTab] = useState<'resumen' | 'pipeline' | 'ordenes'>('resumen')
+
+    // Date filter state
+    const [filterYear, setFilterYear] = useState(currentYear)
+    const [filterMonth, setFilterMonth] = useState<string | null>(null) // null = todo el año
+
     const [overview, setOverview] = useState<OverviewData | null>(null)
     const [pipeline, setPipeline] = useState<PipelineData | null>(null)
     const [orders, setOrders] = useState<SaleOrder[]>([])
@@ -130,10 +161,12 @@ export default function VentasPage() {
     const fetchOverview = useCallback(async (silent = false) => {
         if (!silent) setLoading(true); else setRefreshing(true)
         try {
-            const res = await fetch('/api/admin/crm?view=overview')
+            const params = new URLSearchParams({ view: 'overview', year: filterYear })
+            if (filterMonth) params.set('month', filterMonth)
+            const res = await fetch(`/api/admin/crm?${params}`)
             if (res.ok) setOverview(await res.json())
         } finally { setLoading(false); setRefreshing(false) }
-    }, [])
+    }, [filterYear, filterMonth])
 
     const fetchPipeline = useCallback(async () => {
         setLoading(true)
@@ -159,26 +192,70 @@ export default function VentasPage() {
         else if (tab === 'ordenes') fetchOrders()
     }, [tab]) // eslint-disable-line react-hooks/exhaustive-deps
 
+    // Re-fetch overview when date filter changes
+    useEffect(() => {
+        if (tab === 'resumen') fetchOverview()
+    }, [filterYear, filterMonth]) // eslint-disable-line react-hooks/exhaustive-deps
+
     useEffect(() => {
         if (tab === 'ordenes') fetchOrders()
     }, [selectedSeller, ordersMonths]) // eslint-disable-line react-hooks/exhaustive-deps
+
+    const periodLabel = filterMonth
+        ? `${MONTHS.find(m => m.value === filterMonth)?.label} ${filterYear}`
+        : `Año ${filterYear}`
 
     return (
         <div className="flex flex-col min-h-full">
             {/* Page header */}
             <div className="border-b border-zinc-800 bg-zinc-900/50 sticky top-0 z-10">
-                <div className="px-6 py-4 flex items-center justify-between">
+                <div className="px-6 py-4 flex items-center justify-between gap-4">
                     <div>
                         <h1 className="text-lg font-bold text-white leading-none">Ventas</h1>
                         <p className="text-zinc-500 text-xs mt-1">Dashboard y métricas · Odoo 17</p>
                     </div>
-                    <button
-                        onClick={() => fetchOverview(true)}
-                        disabled={refreshing}
-                        className="flex items-center gap-1.5 text-zinc-500 hover:text-white text-sm transition-colors"
-                    >
-                        <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-                    </button>
+
+                    {/* Date filter — only show on resumen tab */}
+                    {tab === 'resumen' && (
+                        <div className="flex items-center gap-2">
+                            {/* Year selector */}
+                            <div className="relative flex items-center gap-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 cursor-pointer hover:border-zinc-600 transition-colors">
+                                <select
+                                    value={filterYear}
+                                    onChange={e => setFilterYear(e.target.value)}
+                                    className="bg-transparent text-sm text-white focus:outline-none cursor-pointer appearance-none pr-4"
+                                >
+                                    {getYears().map(y => (
+                                        <option key={y} value={y}>{y}</option>
+                                    ))}
+                                </select>
+                                <ChevronDown className="absolute right-2 w-3 h-3 text-zinc-500 pointer-events-none" />
+                            </div>
+
+                            {/* Month selector */}
+                            <div className="relative flex items-center bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 cursor-pointer hover:border-zinc-600 transition-colors">
+                                <select
+                                    value={filterMonth ?? ''}
+                                    onChange={e => setFilterMonth(e.target.value || null)}
+                                    className="bg-transparent text-sm text-white focus:outline-none cursor-pointer appearance-none pr-4"
+                                >
+                                    <option value="">Todo el año</option>
+                                    {MONTHS.map(m => (
+                                        <option key={m.value} value={m.value}>{m.label}</option>
+                                    ))}
+                                </select>
+                                <ChevronDown className="absolute right-2 w-3 h-3 text-zinc-500 pointer-events-none" />
+                            </div>
+
+                            <button
+                                onClick={() => fetchOverview(true)}
+                                disabled={refreshing}
+                                className="p-1.5 text-zinc-500 hover:text-white transition-colors"
+                            >
+                                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 {/* Tabs */}
@@ -206,7 +283,14 @@ export default function VentasPage() {
                     </div>
                 ) : (
                     <>
-                        {tab === 'resumen' && overview && <ResumenTab data={overview} />}
+                        {tab === 'resumen' && overview && (
+                            <ResumenTab
+                                data={overview}
+                                year={filterYear}
+                                month={filterMonth}
+                                periodLabel={periodLabel}
+                            />
+                        )}
                         {tab === 'pipeline' && pipeline && <PipelineTab data={pipeline} />}
                         {tab === 'ordenes' && (
                             <OrdenesTab
@@ -227,22 +311,37 @@ export default function VentasPage() {
 
 // ── Resumen Tab ────────────────────────────────────────────────────────────
 
-function ResumenTab({ data }: { data: OverviewData }) {
-    const months = getLast6Months()
+function ResumenTab({ data, year, month, periodLabel }: {
+    data: OverviewData
+    year: string
+    month: string | null
+    periodLabel: string
+}) {
+    const chartMonths = getChartMonths(year, month)
 
     return (
         <div className="space-y-6">
+            {/* Period label */}
+            <div className="flex items-center gap-2">
+                <span className="text-zinc-400 text-sm">Período:</span>
+                <span className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-sm font-medium px-3 py-1 rounded-full">
+                    {periodLabel}
+                </span>
+            </div>
+
+            {/* KPI Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <KpiCard icon={<DollarSign className="w-5 h-5" />} label="Ingresos totales" value={fmt(data.globalRevenue)} accent="yellow" />
+                <KpiCard icon={<DollarSign className="w-5 h-5" />} label="Ingresos confirmados" value={fmt(data.globalRevenue)} accent="yellow" />
                 <KpiCard icon={<CheckCircle2 className="w-5 h-5" />} label="Ventas confirmadas" value={data.globalConfirmed.toLocaleString()} accent="green" />
                 <KpiCard icon={<Clock className="w-5 h-5" />} label="Cotizaciones abiertas" value={data.globalDraft.toLocaleString()} accent="blue" />
                 <KpiCard icon={<Users className="w-5 h-5" />} label="Vendedores activos" value={data.sellers.length.toString()} accent="zinc" />
             </div>
 
+            {/* Sellers Table */}
             <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
                 <div className="px-5 py-4 border-b border-zinc-800 flex items-center justify-between">
                     <h2 className="font-semibold text-sm text-white">Rendimiento por vendedor</h2>
-                    <span className="text-zinc-600 text-xs">{data.totalOrders.toLocaleString()} órdenes totales</span>
+                    <span className="text-zinc-600 text-xs">{data.totalOrders.toLocaleString()} órdenes en el período</span>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
@@ -257,6 +356,13 @@ function ResumenTab({ data }: { data: OverviewData }) {
                             </tr>
                         </thead>
                         <tbody>
+                            {data.sellers.length === 0 && (
+                                <tr>
+                                    <td colSpan={6} className="px-5 py-10 text-center text-zinc-600 text-sm">
+                                        Sin datos en este período
+                                    </td>
+                                </tr>
+                            )}
                             {data.sellers.map((seller, i) => (
                                 <tr key={seller.id} className="border-b border-zinc-800/40 hover:bg-zinc-800/30 transition-colors">
                                     <td className="px-5 py-3.5">
@@ -286,10 +392,16 @@ function ResumenTab({ data }: { data: OverviewData }) {
                 </div>
             </div>
 
+            {/* Charts: one per top seller */}
             {data.sellers.length > 0 && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    {data.sellers.slice(0, 2).map(seller => (
-                        <MonthlyChart key={seller.id} seller={seller} months={months} />
+                    {data.sellers.slice(0, 4).map(seller => (
+                        <MonthlyChart
+                            key={seller.id}
+                            seller={seller}
+                            months={chartMonths}
+                            isMonthView={!!month}
+                        />
                     ))}
                 </div>
             )}
@@ -309,38 +421,66 @@ function KpiCard({ icon, label, value, accent }: { icon: React.ReactNode; label:
     )
 }
 
-function MonthlyChart({ seller, months }: { seller: Seller; months: string[] }) {
+function MonthlyChart({ seller, months, isMonthView }: {
+    seller: Seller
+    months: string[]
+    isMonthView: boolean
+}) {
     const values = months.map(m => seller.monthlyRevenue[m] ?? 0)
     const max = Math.max(...values, 1)
+
+    // Label: for yearly view show month abbreviation, for monthly show the month name
+    const getLabel = (m: string) => {
+        const [, mm] = m.split('-')
+        return MONTHS.find(mo => mo.value === mm)?.label.slice(0, 3) ?? mm
+    }
+
     return (
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
             <div className="flex items-center gap-2 mb-4">
-                <div className="w-7 h-7 rounded-full bg-yellow-500/10 flex items-center justify-center text-xs font-bold text-yellow-400">
+                <div className="w-7 h-7 rounded-full bg-yellow-500/10 flex items-center justify-center text-xs font-bold text-yellow-400 shrink-0">
                     {seller.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                 </div>
-                <div>
-                    <p className="text-sm font-semibold text-white leading-none">{seller.name}</p>
-                    <p className="text-xs text-zinc-500 mt-0.5">Ingresos últimos 6 meses</p>
+                <div className="min-w-0">
+                    <p className="text-sm font-semibold text-white leading-none truncate">{seller.name}</p>
+                    <p className="text-xs text-zinc-500 mt-0.5">
+                        {isMonthView ? 'Ingresos del mes' : 'Ingresos por mes'}
+                    </p>
                 </div>
+                <span className="ml-auto text-sm font-bold text-white font-mono shrink-0">
+                    {fmt(values.reduce((a, b) => a + b, 0))}
+                </span>
             </div>
-            <div className="flex items-end gap-1.5 h-28">
-                {values.map((v, i) => {
-                    const isLast = i === values.length - 1
-                    const height = Math.max(4, Math.round((v / max) * 100))
-                    return (
-                        <div key={months[i]} className="flex-1 flex flex-col items-center gap-1">
-                            <div className="w-full flex flex-col justify-end" style={{ height: 96 }}>
-                                <div
-                                    className={`w-full rounded-t ${isLast ? 'bg-yellow-500' : 'bg-zinc-700'} transition-all`}
-                                    style={{ height: `${height}%` }}
-                                    title={fmt(v)}
-                                />
+
+            {isMonthView ? (
+                // Month view: single big number
+                <div className="flex items-center justify-center h-20">
+                    <div className="text-center">
+                        <p className="text-3xl font-extrabold text-yellow-400">{fmt(values[0])}</p>
+                        <p className="text-zinc-600 text-xs mt-1">{getLabel(months[0])}</p>
+                    </div>
+                </div>
+            ) : (
+                // Year view: bar chart
+                <div className="flex items-end gap-1 h-24">
+                    {values.map((v, i) => {
+                        const isCurrentMonth = months[i] === `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`
+                        const height = Math.max(v > 0 ? 6 : 2, Math.round((v / max) * 100))
+                        return (
+                            <div key={months[i]} className="flex-1 flex flex-col items-center gap-1">
+                                <div className="w-full flex flex-col justify-end" style={{ height: 88 }}>
+                                    <div
+                                        className={`w-full rounded-t transition-all ${isCurrentMonth ? 'bg-yellow-500' : v > 0 ? 'bg-zinc-600' : 'bg-zinc-800'}`}
+                                        style={{ height: `${height}%` }}
+                                        title={fmt(v)}
+                                    />
+                                </div>
+                                <span className="text-zinc-600 text-[10px]">{getLabel(months[i])}</span>
                             </div>
-                            <span className="text-zinc-600 text-xs">{months[i].slice(5)}</span>
-                        </div>
-                    )
-                })}
-            </div>
+                        )
+                    })}
+                </div>
+            )}
         </div>
     )
 }

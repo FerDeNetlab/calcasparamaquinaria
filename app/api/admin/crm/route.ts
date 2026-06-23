@@ -34,7 +34,20 @@ export async function GET(req: NextRequest) {
     const view = req.nextUrl.searchParams.get('view') ?? 'overview'
 
     if (view === 'overview') {
-        // Fetch all sale orders
+        const year  = req.nextUrl.searchParams.get('year')  // e.g. "2026"
+        const month = req.nextUrl.searchParams.get('month') // e.g. "06" or null = full year
+
+        // Build date domain
+        const domain: unknown[] = []
+        if (year && month) {
+            const lastDay = new Date(parseInt(year), parseInt(month), 0).getDate()
+            domain.push(['date_order', '>=', `${year}-${month}-01 00:00:00`])
+            domain.push(['date_order', '<=', `${year}-${month}-${lastDay} 23:59:59`])
+        } else if (year) {
+            domain.push(['date_order', '>=', `${year}-01-01 00:00:00`])
+            domain.push(['date_order', '<=', `${year}-12-31 23:59:59`])
+        }
+
         const orders: Array<{
             id: number
             name: string
@@ -44,7 +57,7 @@ export async function GET(req: NextRequest) {
             amount_total: number
             date_order: string
             invoice_status: string
-        }> = await odoo('sale.order', 'search_read', [[]], {
+        }> = await odoo('sale.order', 'search_read', [domain], {
             fields: ['name', 'state', 'user_id', 'partner_id', 'amount_total', 'date_order', 'invoice_status'],
             limit: 5000,
             order: 'date_order asc',
