@@ -1,22 +1,17 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getProducts, updateProduct, deleteProduct } from '@/lib/odoo'
+import { verifyToken, COOKIE_NAME } from '@/lib/admin-auth'
 
-// Password from Vercel env variable (no default — must be configured)
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || ''
-
-function unauthorized() {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-}
-
-function checkAuth(request: Request): boolean {
-    const authHeader = request.headers.get('Authorization')
-    if (!authHeader?.startsWith('Bearer ')) return false
-    return authHeader.slice(7) === ADMIN_PASSWORD
+async function checkAuth(req: NextRequest): Promise<boolean> {
+    const token = req.cookies.get(COOKIE_NAME)?.value
+    if (!token) return false
+    const user = await verifyToken(token)
+    return user !== null
 }
 
 /** GET /api/admin/products?page=1&limit=50&search=...&sort=list_price&order=asc */
-export async function GET(request: Request) {
-    if (!checkAuth(request)) return unauthorized()
+export async function GET(request: NextRequest) {
+    if (!await checkAuth(request)) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1', 10)
@@ -42,8 +37,8 @@ export async function GET(request: Request) {
 }
 
 /** PUT /api/admin/products  body: { id, name?, list_price?, description_sale?, default_code? } */
-export async function PUT(request: Request) {
-    if (!checkAuth(request)) return unauthorized()
+export async function PUT(request: NextRequest) {
+    if (!await checkAuth(request)) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
     try {
         const body = await request.json()
@@ -74,8 +69,8 @@ export async function PUT(request: Request) {
 }
 
 /** DELETE /api/admin/products  body: { id } */
-export async function DELETE(request: Request) {
-    if (!checkAuth(request)) return unauthorized()
+export async function DELETE(request: NextRequest) {
+    if (!await checkAuth(request)) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
     try {
         const body = await request.json()
