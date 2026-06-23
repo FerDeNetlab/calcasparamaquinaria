@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { Loader2, Lock, Mail } from 'lucide-react'
 
 export default function AdminLoginPage() {
@@ -43,10 +44,13 @@ export default function AdminLoginPage() {
             <div className="relative w-full max-w-sm">
                 {/* Logo */}
                 <div className="flex justify-center mb-8">
-                    <div className="text-center">
-                        <span className="text-yellow-400 font-black text-2xl tracking-tight">CALCAS</span>
-                        <span className="block text-zinc-500 text-xs font-medium tracking-widest uppercase mt-0.5">para maquinaria</span>
-                    </div>
+                    <Image
+                        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/RASGADO%20COM%20MX%20w%20v2-pwTMy809i4tSdCEEEOcXvXlI1HdQvM.png"
+                        alt="Calcas para Maquinaria"
+                        width={200}
+                        height={46}
+                        className="h-11 w-auto"
+                    />
                 </div>
 
                 {/* Card */}

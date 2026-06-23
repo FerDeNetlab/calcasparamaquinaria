@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import {
     BarChart3, FileText, Users, Package, Settings,
@@ -68,10 +69,13 @@ export default function AdminShell({ user, modules, children }: Props) {
                 {/* Logo */}
                 <div className="p-5 border-b border-zinc-800 flex items-center justify-between">
                     <Link href="/admin/ventas" onClick={() => setSidebarOpen(false)}>
-                        <div className="flex flex-col leading-none">
-                            <span className="text-yellow-400 font-black text-sm tracking-tight">CALCAS</span>
-                            <span className="text-zinc-400 text-xs font-medium tracking-widest uppercase">para maquinaria</span>
-                        </div>
+                        <Image
+                            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/RASGADO%20COM%20MX%20w%20v2-pwTMy809i4tSdCEEEOcXvXlI1HdQvM.png"
+                            alt="Calcas para Maquinaria"
+                            width={160}
+                            height={36}
+                            className="h-8 w-auto"
+                        />
                     </Link>
                     <button
                         onClick={() => setSidebarOpen(false)}
@@ -142,7 +146,13 @@ export default function AdminShell({ user, modules, children }: Props) {
                     >
                         <Menu className="w-5 h-5" />
                     </button>
-                    <span className="text-yellow-400 font-black text-sm tracking-tight">CALCAS <span className="text-zinc-500 font-medium">para maquinaria</span></span>
+                    <Image
+                        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/RASGADO%20COM%20MX%20w%20v2-pwTMy809i4tSdCEEEOcXvXlI1HdQvM.png"
+                        alt="Calcas para Maquinaria"
+                        width={140}
+                        height={32}
+                        className="h-7 w-auto"
+                    />
                     <div className="ml-auto w-7 h-7 rounded-full bg-yellow-500/15 flex items-center justify-center text-yellow-400 text-xs font-bold">
                         {initials}
                     </div>
