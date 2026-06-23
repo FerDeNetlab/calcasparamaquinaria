@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import { Loader2, Lock, Mail } from 'lucide-react'
 
 export default function AdminLoginPage() {
@@ -39,19 +38,14 @@ export default function AdminLoginPage() {
     return (
         <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center p-4">
             {/* Background texture */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-yellow-950/20 via-zinc-950 to-zinc-950 pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-yellow-950/20 via-zinc-950 to-zinc-950 pointer-events-none" />
 
             <div className="relative w-full max-w-sm">
                 {/* Logo */}
                 <div className="flex justify-center mb-8">
-                    <div className="relative w-48 h-12">
-                        <Image
-                            src="/logo.png"
-                            alt="Calcas para Maquinaria"
-                            fill
-                            className="object-contain"
-                            onError={() => {}}
-                        />
+                    <div className="text-center">
+                        <span className="text-yellow-400 font-black text-2xl tracking-tight">CALCAS</span>
+                        <span className="block text-zinc-500 text-xs font-medium tracking-widest uppercase mt-0.5">para maquinaria</span>
                     </div>
                 </div>
 

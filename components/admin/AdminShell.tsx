@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import Image from 'next/image'
 import {
     BarChart3, FileText, Users, Package, Settings,
     LogOut, Menu, X, ChevronRight
@@ -69,14 +68,9 @@ export default function AdminShell({ user, modules, children }: Props) {
                 {/* Logo */}
                 <div className="p-5 border-b border-zinc-800 flex items-center justify-between">
                     <Link href="/admin/ventas" onClick={() => setSidebarOpen(false)}>
-                        <div className="relative h-8 w-36">
-                            <Image
-                                src="/logo.png"
-                                alt="Calcas para Maquinaria"
-                                fill
-                                className="object-contain object-left"
-                                onError={() => {}}
-                            />
+                        <div className="flex flex-col leading-none">
+                            <span className="text-yellow-400 font-black text-sm tracking-tight">CALCAS</span>
+                            <span className="text-zinc-400 text-xs font-medium tracking-widest uppercase">para maquinaria</span>
                         </div>
                     </Link>
                     <button
@@ -148,15 +142,7 @@ export default function AdminShell({ user, modules, children }: Props) {
                     >
                         <Menu className="w-5 h-5" />
                     </button>
-                    <div className="relative h-7 w-32">
-                        <Image
-                            src="/logo.png"
-                            alt="Calcas para Maquinaria"
-                            fill
-                            className="object-contain object-left"
-                            onError={() => {}}
-                        />
-                    </div>
+                    <span className="text-yellow-400 font-black text-sm tracking-tight">CALCAS <span className="text-zinc-500 font-medium">para maquinaria</span></span>
                     <div className="ml-auto w-7 h-7 rounded-full bg-yellow-500/15 flex items-center justify-center text-yellow-400 text-xs font-bold">
                         {initials}
                     </div>
