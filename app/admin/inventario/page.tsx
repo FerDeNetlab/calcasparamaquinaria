@@ -140,8 +140,8 @@ export default function InventarioPage() {
             {/* Page header */}
             <div className="border-b border-zinc-800 bg-zinc-900/50 sticky top-0 z-10">
                 <div className="px-6 py-4">
-                    <h1 className="text-lg font-bold text-white leading-none">Inventario</h1>
-                    <p className="text-zinc-500 text-xs mt-1">{total.toLocaleString()} productos en Odoo</p>
+                    <h1 className="text-lg font-bold text-white leading-none">Juegos de Calcas</h1>
+                    <p className="text-zinc-500 text-xs mt-1">{total.toLocaleString()} juegos en Odoo</p>
                 </div>
             </div>
 

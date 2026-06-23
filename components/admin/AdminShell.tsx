@@ -14,7 +14,7 @@ const MODULE_META: Record<string, { label: string; icon: React.ReactNode; href: 
     ventas:        { label: 'Ventas',        icon: <BarChart3 className="w-4 h-4" />,  href: '/admin/ventas' },
     cotizaciones:  { label: 'Cotizaciones',  icon: <FileText className="w-4 h-4" />,   href: '/admin/cotizaciones' },
     clientes:      { label: 'Clientes',      icon: <Users className="w-4 h-4" />,      href: '/admin/clientes' },
-    inventario:    { label: 'Inventario',    icon: <Package className="w-4 h-4" />,    href: '/admin/inventario' },
+    inventario:    { label: 'Juegos',        icon: <Package className="w-4 h-4" />,    href: '/admin/inventario' },
     configuracion: { label: 'Configuración', icon: <Settings className="w-4 h-4" />,   href: '/admin/configuracion' },
 }
 
@@ -49,7 +49,7 @@ export default function AdminShell({ user, modules, children }: Props) {
     const initials = user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
 
     return (
-        <div className="min-h-screen bg-zinc-950 flex">
+        <div className="h-screen bg-zinc-950 flex overflow-hidden">
 
             {/* ── Sidebar overlay (mobile) ── */}
             {sidebarOpen && (
@@ -62,9 +62,9 @@ export default function AdminShell({ user, modules, children }: Props) {
             {/* ── Sidebar ── */}
             <aside className={`
                 fixed top-0 left-0 h-full w-60 bg-zinc-900 border-r border-zinc-800 z-40
-                flex flex-col transition-transform duration-200
+                flex flex-col transition-transform duration-200 shrink-0
                 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-                lg:translate-x-0 lg:static lg:z-auto
+                lg:translate-x-0 lg:relative lg:z-auto
             `}>
                 {/* Logo */}
                 <div className="p-5 border-b border-zinc-800 flex items-center justify-between">
@@ -137,7 +137,7 @@ export default function AdminShell({ user, modules, children }: Props) {
             </aside>
 
             {/* ── Main content ── */}
-            <div className="flex-1 flex flex-col min-w-0">
+            <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
                 {/* Mobile topbar */}
                 <header className="lg:hidden bg-zinc-900 border-b border-zinc-800 px-4 py-3 flex items-center gap-3 sticky top-0 z-20">
                     <button
@@ -159,7 +159,7 @@ export default function AdminShell({ user, modules, children }: Props) {
                 </header>
 
                 {/* Page content */}
-                <main className="flex-1 overflow-auto">
+                <main className="flex-1 overflow-y-auto">
                     {children}
                 </main>
             </div>
