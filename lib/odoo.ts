@@ -354,3 +354,35 @@ export async function deleteProduct(id: number): Promise<boolean> {
         [[id]]
     )
 }
+
+// ─── Admin catalog queries (no ecommerce filter) ─────────────────────────────
+
+const ADMIN_FIELDS = [
+    'id', 'name', 'list_price', 'categ_id', 'default_code',
+    'description_sale', 'x_available_ecommerce', 'x_validated_by_direction', 'write_date',
+]
+
+/**
+ * Get products by category ID without ecommerce filter.
+ * Used for admin modules like Carátulas.
+ */
+export async function getAdminProductsByCategory(
+    categoryId: number,
+    page = 1,
+    limit = 50,
+    search?: string,
+    orderBy = 'name asc'
+): Promise<ProductsResult & { products: OdooProduct[] }> {
+    const domain: unknown[] = [['categ_id', '=', categoryId]]
+    if (search) domain.push(['name', 'ilike', search])
+
+    const offset = (page - 1) * limit
+    const [products, total] = await Promise.all([
+        execute('product.template', 'search_read', [domain], {
+            fields: ADMIN_FIELDS, limit, offset, order: orderBy,
+        }),
+        execute('product.template', 'search_count', [domain]),
+    ])
+
+    return { products, total, page, limit, totalPages: Math.ceil(total / limit) }
+}

@@ -88,10 +88,10 @@ export function getRoleForUid(uid: number): AdminRole | null {
 
 // What each role can access
 export const ROLE_MODULES: Record<AdminRole, string[]> = {
-    admin:    ['ventas', 'cotizaciones', 'clientes', 'inventario', 'configuracion'],
+    admin:    ['ventas', 'cotizaciones', 'clientes', 'inventario', 'caratulas', 'configuracion'],
     gerente:  ['ventas', 'cotizaciones', 'clientes'],
     vendedor: ['ventas', 'cotizaciones', 'clientes'],
-    almacen:  ['inventario'],
+    almacen:  ['inventario', 'caratulas'],
 }
 
 export function canAccess(role: AdminRole, module: string): boolean {
