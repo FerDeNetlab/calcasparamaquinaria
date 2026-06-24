@@ -135,7 +135,7 @@ function KanbanCard({ lead, onMoveLeft, onMoveRight, isDragging, onDragStart, on
                     <DollarSign className="w-3 h-3 text-zinc-500" />
                     <span className="text-green-400 text-xs font-mono font-medium">{fmt(revenue)}</span>
                     {lead.publim_invoice_paid && (
-                        <CheckCircle2 className="w-3 h-3 text-green-500 ml-1" title="Factura cobrada" />
+                        <CheckCircle2 className="w-3 h-3 text-green-500 ml-1" />
                     )}
                 </div>
             )}
