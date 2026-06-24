@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken, COOKIE_NAME } from '@/lib/admin-auth'
+import { cacheGet, cacheSet, TTL } from '@/lib/server-cache'
 
 const ODOO_URL = process.env.ODOO_URL!
 const ODOO_DB = process.env.ODOO_DB!
@@ -47,6 +48,10 @@ export async function GET(req: NextRequest) {
             domain.push(['date_order', '>=', `${year}-01-01 00:00:00`])
             domain.push(['date_order', '<=', `${year}-12-31 23:59:59`])
         }
+
+        const crmKey = `crm:overview:${year ?? 'all'}:${month ?? 'all'}`
+        const cachedOverview = cacheGet<unknown>(crmKey)
+        if (cachedOverview) return NextResponse.json(cachedOverview)
 
         const orders: Array<{
             id: number
@@ -118,13 +123,9 @@ export async function GET(req: NextRequest) {
             }))
             .sort((a, b) => b.totalConfirmed - a.totalConfirmed)
 
-        return NextResponse.json({
-            globalConfirmed,
-            globalDraft,
-            globalRevenue,
-            totalOrders: orders.length,
-            sellers,
-        })
+        const overview = { globalConfirmed, globalDraft, globalRevenue, totalOrders: orders.length, sellers }
+        cacheSet(crmKey, overview, TTL.MEDIUM)
+        return NextResponse.json(overview)
     }
 
     if (view === 'pipeline') {

@@ -1,5 +1,6 @@
 import 'server-only'
 import { extractBrand } from './brands'
+import { cacheGet, cacheSet, cacheInvalidatePrefix, TTL } from './server-cache'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -65,22 +66,33 @@ async function jsonRpc(service: string, method: string, args: unknown[]) {
     return data.result
 }
 
-/** Execute a method on an Odoo model (read-only) */
+/** Execute a method on an Odoo model.
+ *  Read operations (search_read, search_count, fields_get) are cached by default.
+ *  Write operations (write, unlink, create) skip the cache and invalidate products cache.
+ */
 async function execute(
     model: string,
     method: string,
     args: unknown[],
     kwargs: Record<string, unknown> = {}
 ) {
-    return jsonRpc('object', 'execute_kw', [
-        ODOO_DB,
-        ODOO_UID,
-        ODOO_API_KEY,
-        model,
-        method,
-        args,
-        kwargs,
-    ])
+    const isWrite = ['write', 'unlink', 'create'].includes(method)
+
+    if (!isWrite) {
+        const key = `odoo:${model}:${method}:${JSON.stringify(args)}:${JSON.stringify(kwargs)}`
+        const ttl = model === 'product.category' ? TTL.LONG
+                  : method === 'search_count'     ? TTL.MEDIUM
+                  : TTL.MEDIUM
+        const cached = cacheGet<unknown>(key)
+        if (cached !== null) return cached
+        const result = await jsonRpc('object', 'execute_kw', [ODOO_DB, ODOO_UID, ODOO_API_KEY, model, method, args, kwargs])
+        cacheSet(key, result, ttl)
+        return result
+    }
+
+    // Write — flush all cached entries for this model
+    cacheInvalidatePrefix(`odoo:${model}:`)
+    return jsonRpc('object', 'execute_kw', [ODOO_DB, ODOO_UID, ODOO_API_KEY, model, method, args, kwargs])
 }
 
 // ─── Base filter: only website-published products ───────────────────────────

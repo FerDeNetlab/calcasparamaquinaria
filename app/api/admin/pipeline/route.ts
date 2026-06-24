@@ -1,30 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken, COOKIE_NAME } from '@/lib/admin-auth'
+import { cacheGet, cacheSet, cacheInvalidatePrefix, TTL } from '@/lib/server-cache'
 
 const ODOO_URL     = process.env.ODOO_URL!
 const ODOO_DB      = process.env.ODOO_DB!
 const ODOO_UID     = 2
 const ODOO_API_KEY = process.env.ODOO_API_KEY!
-
-// ── In-memory cache (server-side) ──────────────────────────────────────────
-// Avoids hammering Odoo on every page load.
-// Leads: 30s TTL (changes often), stages+users: 5min TTL (almost static).
-
-interface CacheEntry<T> { data: T; expiresAt: number }
-
-const cache = new Map<string, CacheEntry<unknown>>()
-
-function cacheGet<T>(key: string): T | null {
-    const entry = cache.get(key) as CacheEntry<T> | undefined
-    if (!entry || Date.now() > entry.expiresAt) { cache.delete(key); return null }
-    return entry.data
-}
-
-function cacheSet<T>(key: string, data: T, ttlMs: number) {
-    cache.set(key, { data, expiresAt: Date.now() + ttlMs })
-}
-
-// ── Odoo client ────────────────────────────────────────────────────────────
 
 async function execute(model: string, method: string, args: unknown[], kwargs: Record<string, unknown> = {}) {
     const payload = {
@@ -42,8 +23,6 @@ async function execute(model: string, method: string, args: unknown[], kwargs: R
     return data.result
 }
 
-// ── Config ─────────────────────────────────────────────────────────────────
-
 const LEAD_FIELDS = [
     'id', 'name', 'partner_id', 'user_id', 'stage_id',
     'expected_revenue', 'priority', 'kanban_state',
@@ -52,11 +31,7 @@ const LEAD_FIELDS = [
     'tag_ids', 'date_last_stage_update',
 ]
 
-const ALL_STAGE_IDS  = [18, 11, 12, 14, 16, 17, 19, 4]
-const LEADS_TTL      = 30_000   // 30 seconds
-const STATIC_TTL     = 300_000  // 5 minutes
-
-// ── GET ────────────────────────────────────────────────────────────────────
+const ALL_STAGE_IDS = [18, 11, 12, 14, 16, 17, 19, 4]
 
 export async function GET(req: NextRequest) {
     const token = req.cookies.get(COOKIE_NAME)?.value
@@ -68,9 +43,7 @@ export async function GET(req: NextRequest) {
     const filterUserId = searchParams.get('userId')
     const showLost     = searchParams.get('lost') === 'true'
 
-    // Build lead domain
     const domain: unknown[] = [['type', '=', 'opportunity'], ['active', '=', true]]
-
     if (user.role === 'admin' && filterUserId && filterUserId !== 'all') {
         domain.push(['user_id', '=', parseInt(filterUserId)])
     } else if (user.role !== 'admin') {
@@ -78,66 +51,52 @@ export async function GET(req: NextRequest) {
     }
     if (!showLost) domain.push(['stage_id', '!=', 19])
 
-    // Cache key for leads depends on who's requesting + filters
-    const leadsKey  = `leads:${user.role === 'admin' ? (filterUserId ?? 'all') : user.uid}:lost=${showLost}`
-    const stagesKey = 'stages'
-    const usersKey  = 'salesUsers'
+    const leadsKey  = `pipeline:leads:${user.role === 'admin' ? (filterUserId ?? 'all') : user.uid}:lost=${showLost}`
+    const stagesKey = 'pipeline:stages'
+    const usersKey  = 'pipeline:salesUsers'
 
     try {
-        // Fetch stages and salesUsers from cache (rarely change)
         const [stages, salesUsers] = await Promise.all([
             (async () => {
-                const cached = cacheGet<unknown[]>(stagesKey)
-                if (cached) return cached
+                const c = cacheGet<unknown[]>(stagesKey)
+                if (c) return c
                 const fresh = await execute('crm.stage', 'search_read', [[['id', 'in', ALL_STAGE_IDS]]], {
                     fields: ['id', 'name', 'sequence', 'is_won', 'fold'],
                     order: 'sequence asc',
                 })
-                cacheSet(stagesKey, fresh, STATIC_TTL)
+                cacheSet(stagesKey, fresh, TTL.LONG)
                 return fresh
             })(),
             (async () => {
                 if (user.role !== 'admin') return []
-                const cached = cacheGet<unknown[]>(usersKey)
-                if (cached) return cached
+                const c = cacheGet<unknown[]>(usersKey)
+                if (c) return c
                 const fresh = await execute('res.users', 'search_read', [[['share', '=', false], ['active', '=', true]]], {
-                    fields: ['id', 'name'],
-                    order: 'name asc',
+                    fields: ['id', 'name'], order: 'name asc',
                 })
-                cacheSet(usersKey, fresh, STATIC_TTL)
+                cacheSet(usersKey, fresh, TTL.LONG)
                 return fresh
             })(),
         ])
 
-        // Fetch leads from cache (short TTL)
         let leads = cacheGet<unknown[]>(leadsKey)
         if (!leads) {
             leads = await execute('crm.lead', 'search_read', [domain], {
-                fields: LEAD_FIELDS,
-                limit: 2000,
-                order: 'id desc',
+                fields: LEAD_FIELDS, limit: 2000, order: 'id desc',
             })
-            cacheSet(leadsKey, leads, LEADS_TTL)
+            cacheSet(leadsKey, leads, TTL.SHORT)
         }
 
         const visibleStages = showLost
             ? stages
             : (stages as { id: number }[]).filter(s => s.id !== 19)
 
-        return NextResponse.json({
-            stages: visibleStages,
-            leads,
-            salesUsers,
-            currentUid: user.uid,
-            role: user.role,
-        })
+        return NextResponse.json({ stages: visibleStages, leads, salesUsers, currentUid: user.uid, role: user.role })
     } catch (error) {
         console.error('Pipeline GET error:', error)
         return NextResponse.json({ error: 'Error al obtener pipeline' }, { status: 500 })
     }
 }
-
-// ── PATCH ──────────────────────────────────────────────────────────────────
 
 export async function PATCH(req: NextRequest) {
     const token = req.cookies.get(COOKIE_NAME)?.value
@@ -156,11 +115,7 @@ export async function PATCH(req: NextRequest) {
         }
 
         await execute('crm.lead', 'write', [[leadId], { stage_id: stageId }])
-
-        // Invalidate all leads cache entries so next fetch reflects the move
-        for (const key of cache.keys()) {
-            if (key.startsWith('leads:')) cache.delete(key)
-        }
+        cacheInvalidatePrefix('pipeline:leads:')
 
         return NextResponse.json({ success: true })
     } catch (error) {
