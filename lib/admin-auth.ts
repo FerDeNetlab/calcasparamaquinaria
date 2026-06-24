@@ -88,7 +88,7 @@ export function getRoleForUid(uid: number): AdminRole | null {
 
 // What each role can access
 export const ROLE_MODULES: Record<AdminRole, string[]> = {
-    admin:   ['ventas', 'cotizaciones', 'clientes', 'inventario', 'caratulas', 'configuracion'],
+    admin:   ['ventas', 'crm', 'cotizaciones', 'clientes', 'inventario', 'caratulas', 'configuracion'],
     almacen: ['inventario', 'caratulas'],
 }
 

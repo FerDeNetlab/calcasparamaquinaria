@@ -6,12 +6,13 @@ import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import {
     BarChart3, FileText, Users, Package, Settings,
-    LogOut, Menu, X, ChevronRight, Layers
+    LogOut, Menu, X, ChevronRight, Layers, Kanban
 } from 'lucide-react'
 import type { AdminUser, AdminRole } from '@/lib/admin-auth'
 
 const MODULE_META: Record<string, { label: string; icon: React.ReactNode; href: string }> = {
     ventas:        { label: 'Ventas',        icon: <BarChart3 className="w-4 h-4" />,  href: '/admin/ventas' },
+    crm:           { label: 'CRM',           icon: <Kanban className="w-4 h-4" />,     href: '/admin/crm' },
     cotizaciones:  { label: 'Cotizaciones',  icon: <FileText className="w-4 h-4" />,   href: '/admin/cotizaciones' },
     clientes:      { label: 'Clientes',      icon: <Users className="w-4 h-4" />,      href: '/admin/clientes' },
     inventario:    { label: 'Juegos',        icon: <Package className="w-4 h-4" />,    href: '/admin/inventario' },
