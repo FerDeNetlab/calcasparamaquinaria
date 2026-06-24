@@ -1,6 +1,6 @@
 // Admin auth utilities using Web Crypto API (Edge-compatible, no extra deps)
 
-export type AdminRole = 'admin' | 'gerente' | 'vendedor' | 'almacen'
+export type AdminRole = 'admin' | 'almacen'
 
 export interface AdminUser {
     uid: number
@@ -88,10 +88,8 @@ export function getRoleForUid(uid: number): AdminRole | null {
 
 // What each role can access
 export const ROLE_MODULES: Record<AdminRole, string[]> = {
-    admin:    ['ventas', 'cotizaciones', 'clientes', 'inventario', 'caratulas', 'configuracion'],
-    gerente:  ['ventas', 'cotizaciones', 'clientes'],
-    vendedor: ['ventas', 'cotizaciones', 'clientes'],
-    almacen:  ['inventario', 'caratulas'],
+    admin:   ['ventas', 'cotizaciones', 'clientes', 'inventario', 'caratulas', 'configuracion'],
+    almacen: ['inventario', 'caratulas'],
 }
 
 export function canAccess(role: AdminRole, module: string): boolean {

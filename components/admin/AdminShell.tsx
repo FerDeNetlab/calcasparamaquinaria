@@ -20,10 +20,8 @@ const MODULE_META: Record<string, { label: string; icon: React.ReactNode; href: 
 }
 
 const ROLE_LABELS: Record<AdminRole, string> = {
-    admin:    'Administrador',
-    gerente:  'Gerente',
-    vendedor: 'Vendedor',
-    almacen:  'Almacén',
+    admin:   'Administrador',
+    almacen: 'Almacén',
 }
 
 interface Props {
