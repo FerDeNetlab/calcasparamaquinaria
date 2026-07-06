@@ -1,28 +1,19 @@
 /**
- * Build a product image URL pointing directly to Odoo (no serverless proxy).
- * This eliminates Function Invocations on Vercel.
- * The write_date version param ensures fresh images when products change.
+ * Build a product image URL via the internal proxy (/api/product-image).
+ * The proxy fetches from Odoo with API key auth and sets long CDN cache headers,
+ * so Vercel caches the image for 30 days after the first request.
+ * The write_date version param busts the cache when a product's image changes.
  */
-
-const ODOO_IMAGE_BASE = 'https://odoo.calcasparamaquinaria.mx/web/image/product.template'
-
-const SIZE_MAP: Record<number, string> = {
-    128: 'image_128',
-    256: 'image_256',
-    512: 'image_512',
-    1024: 'image_1024',
-}
 
 export function productImageUrl(
     productId: number,
     size: 128 | 256 | 512 | 1024,
     writeDate?: string
 ): string {
-    const field = SIZE_MAP[size] || 'image_512'
-    const base = `${ODOO_IMAGE_BASE}/${productId}/${field}`
+    const base = `/api/product-image/${productId}?size=${size}`
     if (writeDate) {
         const v = writeDate.replace(/[^0-9]/g, '')
-        return `${base}?v=${v}`
+        return `${base}&v=${v}`
     }
     return base
 }

@@ -79,15 +79,20 @@ async function execute(
     const isWrite = ['write', 'unlink', 'create'].includes(method)
 
     if (!isWrite) {
-        const key = `odoo:${model}:${method}:${JSON.stringify(args)}:${JSON.stringify(kwargs)}`
-        const ttl = model === 'product.category' ? TTL.LONG
-                  : method === 'search_count'     ? TTL.MEDIUM
-                  : TTL.MEDIUM
-        const cached = cacheGet<unknown>(key)
-        if (cached !== null) return cached
-        const result = await jsonRpc('object', 'execute_kw', [ODOO_DB, ODOO_UID, ODOO_API_KEY, model, method, args, kwargs])
-        cacheSet(key, result, ttl)
-        return result
+        // Never cache image fields — they're large binary blobs; CDN handles that via proxy headers
+        const fields = (kwargs.fields as string[] | undefined) ?? []
+        const isImageFetch = fields.some(f => f.startsWith('image_'))
+        if (!isImageFetch) {
+            const key = `odoo:${model}:${method}:${JSON.stringify(args)}:${JSON.stringify(kwargs)}`
+            const ttl = model === 'product.category' ? TTL.LONG
+                      : method === 'search_count'     ? TTL.MEDIUM
+                      : TTL.MEDIUM
+            const cached = cacheGet<unknown>(key)
+            if (cached !== null) return cached
+            const result = await jsonRpc('object', 'execute_kw', [ODOO_DB, ODOO_UID, ODOO_API_KEY, model, method, args, kwargs])
+            cacheSet(key, result, ttl)
+            return result
+        }
     }
 
     // Write — flush all cached entries for this model

@@ -201,7 +201,7 @@ export function CartView() {
                 >
                   <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
                     <Image
-                      src={`https://odoo.calcasparamaquinaria.mx/web/image/product.template/${item.id}/image_128`}
+                      src={`/api/product-image/${item.id}?size=128`}
                       alt={item.name}
                       fill
                       unoptimized
